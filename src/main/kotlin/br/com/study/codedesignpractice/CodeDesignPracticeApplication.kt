@@ -1,4 +1,4 @@
-package br.com.study.code_design_practice
+package br.com.study.codedesignpractice
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
