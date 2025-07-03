@@ -1,9 +1,13 @@
 package br.com.study.codedesignpractice.author
 
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Size
+
 data class AuthorRequest(
-    val name: String,
-    val email: String,
-    val description: String
+    @get:NotBlank val name: String,
+    @get:NotBlank @get:Email val email: String,
+    @get:NotBlank @get:Size(max = 400) val description: String
 ) {
 
     fun toEntity() = Author(

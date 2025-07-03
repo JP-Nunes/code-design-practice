@@ -8,8 +8,7 @@ import java.time.Instant
 
 class AuthorRequestTest {
 
-    @Test
-    fun `should convert AuthorRequest to Author entity`() {
+    @Test fun `should convert AuthorRequest to Author entity`() {
         val authorRequest = AuthorRequest(
             name = "Jane Doe",
             email = "jane.doe@gmail.com",

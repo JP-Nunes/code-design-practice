@@ -17,7 +17,7 @@ class AuthorRepositoryTest @Autowired constructor(
     fun `should retrieve author with correct generated id and timestamp`() {
         val author = Author(
             name = "John Doe",
-            email = "",
+            email = "john.doe@hotmail.com",
             description = "A sample author"
         )
 

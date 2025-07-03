@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package author
 
 import br.com.study.codedesignpractice.CodeDesignPracticeApplication
@@ -16,8 +18,7 @@ import org.springframework.http.HttpStatus
 )
 class SaveAuthorIntegrationTest(@Autowired private val restTemplate: TestRestTemplate) {
 
-    @Test
-    fun `should be able to register an author in the database and return response`() {
+    @Test fun `should be able to register an author in the database and return response`() {
         val authorRequest = AuthorRequest(
             name = "John Doe",
             email = "john.doe@gmail.com",
@@ -25,7 +26,6 @@ class SaveAuthorIntegrationTest(@Autowired private val restTemplate: TestRestTem
         )
 
         val response = restTemplate.postForEntity("/authors", authorRequest, AuthorResponse::class.java)
-
         Assertions.assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
     }
 }

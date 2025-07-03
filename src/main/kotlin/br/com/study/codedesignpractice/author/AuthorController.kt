@@ -1,5 +1,6 @@
 package br.com.study.codedesignpractice.author
 
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -12,7 +13,7 @@ import java.net.URI
 class AuthorController(private val authorRepository: AuthorRepository) {
 
     @PostMapping
-    fun registerAuthor(@RequestBody authorRequest: AuthorRequest): ResponseEntity<AuthorResponse> {
+    fun registerAuthor(@RequestBody @Valid authorRequest: AuthorRequest): ResponseEntity<AuthorResponse> {
         val author = authorRepository.save(authorRequest.toEntity())
         return ResponseEntity
             .created(URI("/authors/${author.id}"))
