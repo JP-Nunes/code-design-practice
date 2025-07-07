@@ -5,4 +5,7 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
-interface AuthorRepository: CrudRepository<Author, UUID>
+interface AuthorRepository: CrudRepository<Author, UUID> {
+
+    fun existsByEmail(email: String): Boolean
+}
