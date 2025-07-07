@@ -16,12 +16,14 @@ class AuthorControllerTest {
     private lateinit var authorRepository: AuthorRepository
     private lateinit var authorController: AuthorController
 
-    @BeforeEach fun setUp() {
+    @BeforeEach
+    fun setUp() {
          authorRepository = mockk<AuthorRepository>()
          authorController = AuthorController(authorRepository)
     }
 
-    @Test fun `should be able to register an author`() {
+    @Test
+    fun `should be able to register an author`() {
         val authorRequest = AuthorRequest(
             name = "John Doe",
             email = "john.doe@gmail.com",
