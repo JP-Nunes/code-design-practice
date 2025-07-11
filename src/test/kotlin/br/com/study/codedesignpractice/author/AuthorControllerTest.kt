@@ -38,7 +38,7 @@ class AuthorControllerTest {
             val authorAfterPersistence= authorBeforePersistence.copy(id = UUID.randomUUID())
             every { authorRepository.save(authorBeforePersistence) } returns authorAfterPersistence
 
-            val actual = authorController.registerAuthor(authorRequest)
+            val actual = authorController.register(authorRequest)
             val expected = ResponseEntity
                 .created(URI("/authors/${authorAfterPersistence.id}"))
                 .body(AuthorResponse.fromEntity(authorAfterPersistence))
