@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 
 @RestController
-@RequestMapping(("/authors"))
+@RequestMapping(("/v1/authors"))
 class AuthorController(private val authorRepository: AuthorRepository) {
 
     @PostMapping
-    fun registerAuthor(@RequestBody @Valid authorRequest: AuthorRequest): ResponseEntity<AuthorResponse> {
+    fun register(@RequestBody @Valid authorRequest: AuthorRequest): ResponseEntity<AuthorResponse> {
         val author = authorRepository.save(authorRequest.toEntity())
         return ResponseEntity
-            .created(URI("/authors/${author.id}"))
+            .created(URI("/v1/authors/${author.id}"))
             .body(AuthorResponse.fromEntity(author))
     }
 }

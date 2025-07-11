@@ -27,7 +27,6 @@ class AuthorRepositoryTest @Autowired constructor(
         entityManager.flush()
 
         val retrievedAuthor = authorRepository.findByIdOrNull(author.id!!)
-
         assertThat(retrievedAuthor).isEqualTo(author)
     }
 

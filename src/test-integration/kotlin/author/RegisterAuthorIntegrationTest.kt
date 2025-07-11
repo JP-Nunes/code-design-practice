@@ -1,4 +1,7 @@
+package author
+
 import br.com.study.codedesignpractice.CodeDesignPracticeApplication
+import jakarta.transaction.Transactional
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -12,10 +15,11 @@ import org.springframework.test.web.servlet.post
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @AutoConfigureMockMvc
-class SaveAuthorIntegrationTest(@Autowired private val mockMvc: MockMvc) {
+@Transactional
+class RegisterAuthorIntegrationTest(@Autowired private val mockMvc: MockMvc) {
 
     companion object {
-        private const val AUTHORS_ENDPOINT = "/authors"
+        private const val AUTHORS_ENDPOINT = "/v1/authors"
     }
 
     @Test
@@ -33,6 +37,8 @@ class SaveAuthorIntegrationTest(@Autowired private val mockMvc: MockMvc) {
         mockMvc.post(AUTHORS_ENDPOINT) {
             contentType = MediaType.APPLICATION_JSON
             content = validAuthorRequest
+        }.andExpect {
+            status { isCreated() }
         }
 
         mockMvc.post(AUTHORS_ENDPOINT) {
@@ -40,8 +46,6 @@ class SaveAuthorIntegrationTest(@Autowired private val mockMvc: MockMvc) {
             content = validAuthorRequest
         }.andExpect {
             status { isBadRequest() }
-        }.andDo {
-            handle { println(it.response.contentAsString) }
         }
     }
 
