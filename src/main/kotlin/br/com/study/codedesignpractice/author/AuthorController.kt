@@ -8,15 +8,17 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 
+const val AUTHORS_V1_PATH = "/v1/authors"
+
 @RestController
-@RequestMapping(("/v1/authors"))
+@RequestMapping(AUTHORS_V1_PATH)
 class AuthorController(private val authorRepository: AuthorRepository) {
 
     @PostMapping
     fun register(@RequestBody @Valid authorRequest: AuthorRequest): ResponseEntity<AuthorResponse> {
         val author = authorRepository.save(authorRequest.toEntity())
         return ResponseEntity
-            .created(URI("/v1/authors/${author.id}"))
+            .created(URI("$AUTHORS_V1_PATH/${author.id}"))
             .body(AuthorResponse.fromEntity(author))
     }
 }

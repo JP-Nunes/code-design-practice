@@ -16,15 +16,15 @@ import org.springframework.test.web.servlet.post
 )
 @AutoConfigureMockMvc
 @Transactional
-class RegisterCategoryIntegrationTest(@Autowired private val mockMvc: MockMvc) {
+class RegisterCategoryIntegrationTest(@param:Autowired private val mockMvc: MockMvc) {
 
     companion object {
-        private const val CATEGORIES_ENDPOINT = "/v1/categories"
+        private const val CATEGORIES_V1_PATH = "/v1/categories"
     }
 
     @Test
     fun `should be able to register a category`() {
-        mockMvc.post(CATEGORIES_ENDPOINT) {
+        mockMvc.post(CATEGORIES_V1_PATH) {
             contentType = MediaType.APPLICATION_JSON
             content = validCategoryRequest
         }.andExpect {
@@ -34,14 +34,14 @@ class RegisterCategoryIntegrationTest(@Autowired private val mockMvc: MockMvc) {
 
     @Test
     fun `should not be able to register a category that already exists`() {
-        mockMvc.post(CATEGORIES_ENDPOINT) {
+        mockMvc.post(CATEGORIES_V1_PATH) {
             contentType = MediaType.APPLICATION_JSON
             content = validCategoryRequest
         }.andExpect {
             status { isCreated() }
         }
 
-        mockMvc.post(CATEGORIES_ENDPOINT) {
+        mockMvc.post(CATEGORIES_V1_PATH) {
             contentType = MediaType.APPLICATION_JSON
             content = validCategoryRequest
         }.andExpect {
@@ -57,7 +57,7 @@ class RegisterCategoryIntegrationTest(@Autowired private val mockMvc: MockMvc) {
 
     @Test
     fun `should be able to validate if the request have null parameters that should not be null`() {
-        mockMvc.post(CATEGORIES_ENDPOINT) {
+        mockMvc.post(CATEGORIES_V1_PATH) {
             contentType = MediaType.APPLICATION_JSON
             content = invalidCategoryRequestWithNullFields
         }.andExpect {
@@ -69,7 +69,7 @@ class RegisterCategoryIntegrationTest(@Autowired private val mockMvc: MockMvc) {
 
     @Test
     fun `should be able to validate if the request have blank parameters that should not be blank`() {
-        mockMvc.post(CATEGORIES_ENDPOINT) {
+        mockMvc.post(CATEGORIES_V1_PATH) {
             contentType = MediaType.APPLICATION_JSON
             content = invalidCategoryRequestWithBlankFields
         }.andExpect {
@@ -85,7 +85,7 @@ class RegisterCategoryIntegrationTest(@Autowired private val mockMvc: MockMvc) {
 
     @Test
     fun `should be able to validate if the request have empty parameters that should not be empty`() {
-        mockMvc.post(CATEGORIES_ENDPOINT) {
+        mockMvc.post(CATEGORIES_V1_PATH) {
             contentType = MediaType.APPLICATION_JSON
             content = invalidCategoryRequestWithEmptyFields
         }.andExpect {

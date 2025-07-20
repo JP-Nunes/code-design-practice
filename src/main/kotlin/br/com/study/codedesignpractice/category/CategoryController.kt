@@ -8,15 +8,17 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 
+const val CATEGORIES_V1_PATH = "/v1/categories"
+
 @RestController
-@RequestMapping("/v1/categories")
+@RequestMapping(CATEGORIES_V1_PATH)
 class CategoryController(private val categoryRepository: CategoryRepository) {
 
     @PostMapping
     fun register(@RequestBody @Valid categoryRequest: CategoryRequest): ResponseEntity<CategoryResponse> {
         val category = categoryRepository.save(categoryRequest.toEntity())
         return ResponseEntity
-            .created(URI("/v1/categories/${category.id}"))
+            .created(URI("$CATEGORIES_V1_PATH/${category.id}"))
             .body(CategoryResponse.fromEntity(category))
     }
 }

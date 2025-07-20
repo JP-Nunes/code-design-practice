@@ -16,16 +16,17 @@ import org.springframework.test.web.servlet.post
 )
 @AutoConfigureMockMvc
 @Transactional
-class RegisterAuthorIntegrationTest(@Autowired private val mockMvc: MockMvc) {
+class RegisterAuthorIntegrationTest(@param:Autowired private val mockMvc: MockMvc) {
 
     companion object {
-        private const val AUTHORS_ENDPOINT = "/v1/authors"
+        private const val AUTHORS_V1_PATH = "/v1/authors"
     }
 
     @Test
     fun `should be able to register an author in the database and return response`() {
-        mockMvc.post(AUTHORS_ENDPOINT) {
+        mockMvc.post(AUTHORS_V1_PATH) {
             contentType = MediaType.APPLICATION_JSON
+            characterEncoding = "UTF-8"
             content = validAuthorRequest
         }.andExpect {
             status { isCreated() }
@@ -34,15 +35,17 @@ class RegisterAuthorIntegrationTest(@Autowired private val mockMvc: MockMvc) {
 
     @Test
     fun `should be able to validate if the email is already in use`() {
-        mockMvc.post(AUTHORS_ENDPOINT) {
+        mockMvc.post(AUTHORS_V1_PATH) {
             contentType = MediaType.APPLICATION_JSON
+            characterEncoding = "UTF-8"
             content = validAuthorRequest
         }.andExpect {
             status { isCreated() }
         }
 
-        mockMvc.post(AUTHORS_ENDPOINT) {
+        mockMvc.post(AUTHORS_V1_PATH) {
             contentType = MediaType.APPLICATION_JSON
+            characterEncoding = "UTF-8"
             content = validAuthorRequest
         }.andExpect {
             status { isBadRequest() }
@@ -59,8 +62,9 @@ class RegisterAuthorIntegrationTest(@Autowired private val mockMvc: MockMvc) {
 
     @Test
     fun `should be able to validate null properties that shoud not be null`() {
-        mockMvc.post(AUTHORS_ENDPOINT) {
+        mockMvc.post(AUTHORS_V1_PATH) {
             contentType = MediaType.APPLICATION_JSON
+            characterEncoding = "UTF-8"
             content = invalidAuthorRequestWithNullFields
         }.andExpect {
             status { isBadRequest() }
@@ -71,8 +75,9 @@ class RegisterAuthorIntegrationTest(@Autowired private val mockMvc: MockMvc) {
 
     @Test
     fun `should be able to validate empty properties that shoud not be empty`() {
-        mockMvc.post(AUTHORS_ENDPOINT) {
+        mockMvc.post(AUTHORS_V1_PATH) {
             contentType = MediaType.APPLICATION_JSON
+            characterEncoding = "UTF-8"
             content = invalidAuthorRequestWithEmptyFields
         }.andExpect {
             status { isBadRequest() }
@@ -89,8 +94,9 @@ class RegisterAuthorIntegrationTest(@Autowired private val mockMvc: MockMvc) {
 
     @Test
     fun `should be able to validate blank properties that shoud not be blank`() {
-        mockMvc.post(AUTHORS_ENDPOINT) {
+        mockMvc.post(AUTHORS_V1_PATH) {
             contentType = MediaType.APPLICATION_JSON
+            characterEncoding = "UTF-8"
             content = invalidAuthorRequestWithBlankFields
         }.andExpect {
             status { isBadRequest() }

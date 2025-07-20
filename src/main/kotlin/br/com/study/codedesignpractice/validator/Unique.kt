@@ -10,7 +10,7 @@ import org.springframework.util.Assert
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
 
-@Target(allowedTargets = [AnnotationTarget.PROPERTY_GETTER])
+@Target(allowedTargets = [AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.FIELD])
 @Retention(value = AnnotationRetention.RUNTIME)
 @Constraint(validatedBy = [UniqueValidator::class])
 annotation class Unique(
