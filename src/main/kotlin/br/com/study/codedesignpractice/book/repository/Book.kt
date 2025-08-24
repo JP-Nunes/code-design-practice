@@ -1,4 +1,4 @@
-package br.com.study.codedesignpractice.book
+package br.com.study.codedesignpractice.book.repository
 
 import br.com.study.codedesignpractice.author.Author
 import br.com.study.codedesignpractice.category.Category

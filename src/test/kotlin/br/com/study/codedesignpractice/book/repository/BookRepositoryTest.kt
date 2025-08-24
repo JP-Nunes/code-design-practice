@@ -1,10 +1,10 @@
-package br.com.study.codedesignpractice.book
+package br.com.study.codedesignpractice.book.repository
 
 import br.com.study.codedesignpractice.author.Author
 import br.com.study.codedesignpractice.author.AuthorRepository
 import br.com.study.codedesignpractice.category.Category
 import br.com.study.codedesignpractice.category.CategoryRepository
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
@@ -52,6 +52,6 @@ class BookRepositoryTest @Autowired constructor(
         entityManager.flush()
         val persistedBook = bookRepository.findByIdOrNull(book.id!!)
 
-        assertThat(persistedBook).isEqualTo(book)
+        Assertions.assertThat(persistedBook).isEqualTo(book)
     }
 }

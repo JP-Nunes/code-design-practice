@@ -1,54 +1,54 @@
-package br.com.study.codedesignpractice.book
+package br.com.study.codedesignpractice.book.controller.request
 
 import br.com.study.codedesignpractice.author.Author
+import br.com.study.codedesignpractice.book.repository.Book
+import br.com.study.codedesignpractice.book.request.BookRequest
 import br.com.study.codedesignpractice.category.Category
 import io.mockk.every
 import io.mockk.mockk
 import jakarta.persistence.EntityManager
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.http.ResponseEntity
-import java.net.URI
 import java.time.LocalDate
 import java.util.UUID
 
-class BookControllerTest {
-
-    private lateinit var bookController: BookController
+class BookRequestTest {
 
     private lateinit var entityManager: EntityManager
-    private lateinit var bookRepository: BookRepository
 
     @BeforeEach
     fun setUp() {
         entityManager = mockk<EntityManager>()
-        bookRepository= mockk<BookRepository>()
-
-        bookController = BookController(bookRepository, entityManager)
     }
 
-
     @Test
-    fun `should be able to register a book`() {
+    fun `should be able to convert request into entity`() {
         val category = category()
         val author = author()
         val bookRequest = bookRequest(categoryId = category.id.toString(), authorId = author.id.toString())
 
-        every { entityManager.find(Category::class.java, category.id.toString()) } returns category
-        every { entityManager.find(Author::class.java, author.id.toString()) } returns author
+        println("TEST >> ${category.id}")
+        println("TEST >> ${author.id}")
+        every { entityManager.find(Category::class.java, UUID.fromString(category.id.toString())) } returns category
+        every { entityManager.find(Author::class.java, UUID.fromString(author.id.toString())) } returns author
 
-        val bookEntity = bookRequest.toEntity(entityManager)
-        val persistedBookEntity = bookEntity.copy(id = UUID.randomUUID())
+        val expected = with(bookRequest) {
+            Book(
+                title = this.title,
+                summary = this.summary,
+                tableOfContents = this.tableOfContents,
+                price = this.price,
+                numberOfPages = this.numberOfPages,
+                isbn = this.isbn,
+                publishDate = this.publishDate,
+                category = category,
+                author = author
+            )
+        }
+        val actual = bookRequest.toEntity(entityManager)
 
-        every { bookRepository.save(bookEntity) } returns persistedBookEntity
-
-        val expected = ResponseEntity
-            .created(URI("/v1/books/${persistedBookEntity.id}"))
-            .body(BookResponse.fromEntity(persistedBookEntity))
-        val actual = bookController.register(bookRequest)
-
-        assertThat(expected).isEqualTo(actual)
+        Assertions.assertThat(expected).isEqualTo(actual)
     }
 
     private fun category(): Category = Category(
@@ -77,5 +77,4 @@ class BookControllerTest {
         categoryId = categoryId,
         authorId = authorId
     )
-
 }

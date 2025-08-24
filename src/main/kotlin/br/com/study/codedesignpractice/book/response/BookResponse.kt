@@ -1,5 +1,6 @@
-package br.com.study.codedesignpractice.book
+package br.com.study.codedesignpractice.book.response
 
+import br.com.study.codedesignpractice.book.repository.Book
 import java.time.format.DateTimeFormatter
 import java.util.*
 

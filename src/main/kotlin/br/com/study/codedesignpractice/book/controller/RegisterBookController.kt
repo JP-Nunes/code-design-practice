@@ -1,5 +1,8 @@
-package br.com.study.codedesignpractice.book
+package br.com.study.codedesignpractice.book.controller
 
+import br.com.study.codedesignpractice.book.repository.BookRepository
+import br.com.study.codedesignpractice.book.request.BookRequest
+import br.com.study.codedesignpractice.book.response.BookResponse
 import jakarta.persistence.EntityManager
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -13,7 +16,7 @@ const val BOOKS_V1_PATH = "/v1/books"
 
 @RestController
 @RequestMapping(BOOKS_V1_PATH)
-class BookController(
+class RegisterBookController(
     private val bookRepository: BookRepository,
     private val entityManager: EntityManager
 ) {

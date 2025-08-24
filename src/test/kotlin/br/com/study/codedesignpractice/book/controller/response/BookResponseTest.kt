@@ -1,6 +1,8 @@
-package br.com.study.codedesignpractice.book
+package br.com.study.codedesignpractice.book.controller.response
 
 import br.com.study.codedesignpractice.author.Author
+import br.com.study.codedesignpractice.book.repository.Book
+import br.com.study.codedesignpractice.book.response.BookResponse
 import br.com.study.codedesignpractice.category.Category
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

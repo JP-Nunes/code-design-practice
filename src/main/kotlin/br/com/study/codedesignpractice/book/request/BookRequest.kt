@@ -1,10 +1,10 @@
-package br.com.study.codedesignpractice.book
+package br.com.study.codedesignpractice.book.request
 
 import br.com.study.codedesignpractice.author.Author
+import br.com.study.codedesignpractice.book.repository.Book
 import br.com.study.codedesignpractice.category.Category
 import br.com.study.codedesignpractice.validator.Unique
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.annotation.JsonFormat.*
 import jakarta.persistence.EntityManager
 import jakarta.validation.constraints.Future
 import jakarta.validation.constraints.Min
@@ -39,7 +39,7 @@ data class BookRequest(
 
     @field:Future
     @field:NotNull
-    @field:JsonFormat(pattern = "dd/MM/yyyy", shape = Shape.STRING)
+    @field:JsonFormat(pattern = "dd/MM/yyyy", shape = JsonFormat.Shape.STRING)
     val publishDate: LocalDate?,
 
     @field:NotBlank
@@ -50,6 +50,9 @@ data class BookRequest(
 ) {
 
     fun toEntity(entityManager: EntityManager): Book {
+        println("CODE >> $categoryId")
+        println("CODE >> $authorId")
+
         val category = entityManager.find(
             Category::class.java,
             UUID.fromString(this.categoryId)

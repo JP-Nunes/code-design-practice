@@ -1,4 +1,4 @@
-package br.com.study.codedesignpractice.book
+package br.com.study.codedesignpractice.book.repository
 
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
