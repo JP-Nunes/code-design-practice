@@ -50,9 +50,6 @@ data class BookRequest(
 ) {
 
     fun toEntity(entityManager: EntityManager): Book {
-        println("CODE >> $categoryId")
-        println("CODE >> $authorId")
-
         val category = entityManager.find(
             Category::class.java,
             UUID.fromString(this.categoryId)

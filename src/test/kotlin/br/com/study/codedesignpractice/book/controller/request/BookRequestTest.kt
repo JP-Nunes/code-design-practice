@@ -28,8 +28,6 @@ class BookRequestTest {
         val author = author()
         val bookRequest = bookRequest(categoryId = category.id.toString(), authorId = author.id.toString())
 
-        println("TEST >> ${category.id}")
-        println("TEST >> ${author.id}")
         every { entityManager.find(Category::class.java, UUID.fromString(category.id.toString())) } returns category
         every { entityManager.find(Author::class.java, UUID.fromString(author.id.toString())) } returns author
 
