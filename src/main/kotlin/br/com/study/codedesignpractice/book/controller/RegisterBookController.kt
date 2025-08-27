@@ -1,8 +1,8 @@
 package br.com.study.codedesignpractice.book.controller
 
 import br.com.study.codedesignpractice.book.repository.BookRepository
-import br.com.study.codedesignpractice.book.request.BookRequest
-import br.com.study.codedesignpractice.book.response.BookResponse
+import br.com.study.codedesignpractice.book.controller.request.BookRequest
+import br.com.study.codedesignpractice.book.controller.response.BookResponse
 import jakarta.persistence.EntityManager
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity

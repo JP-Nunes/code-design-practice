@@ -1,4 +1,4 @@
-package br.com.study.codedesignpractice.book.response
+package br.com.study.codedesignpractice.book.controller.response
 
 import br.com.study.codedesignpractice.book.repository.Book
 import java.time.format.DateTimeFormatter

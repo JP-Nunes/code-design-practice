@@ -4,7 +4,7 @@ import br.com.study.codedesignpractice.CodeDesignPracticeApplication
 import br.com.study.codedesignpractice.author.Author
 import br.com.study.codedesignpractice.author.AuthorRepository
 import br.com.study.codedesignpractice.book.repository.BookRepository
-import br.com.study.codedesignpractice.book.response.BookResponse
+import br.com.study.codedesignpractice.book.controller.response.BookResponse
 import br.com.study.codedesignpractice.category.Category
 import br.com.study.codedesignpractice.category.CategoryRepository
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule

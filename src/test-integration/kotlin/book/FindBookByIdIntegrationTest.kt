@@ -1,9 +1,10 @@
 package book
 
+import book.ListBookIntegrationTest.Companion.BOOKS_V1_PATH
 import br.com.study.codedesignpractice.CodeDesignPracticeApplication
 import br.com.study.codedesignpractice.author.Author
 import br.com.study.codedesignpractice.author.AuthorRepository
-import br.com.study.codedesignpractice.book.controller.response.BooksResponse
+import br.com.study.codedesignpractice.book.controller.response.BookResponse
 import br.com.study.codedesignpractice.book.repository.Book
 import br.com.study.codedesignpractice.book.repository.BookRepository
 import br.com.study.codedesignpractice.category.Category
@@ -17,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import java.time.LocalDate
+import java.util.*
 
 @SpringBootTest(
     classes = [CodeDesignPracticeApplication::class],
@@ -24,41 +26,29 @@ import java.time.LocalDate
 )
 @AutoConfigureMockMvc
 @Transactional
-class ListBookIntegrationTest(
+class FindBookByIdIntegrationTest(
     @param:Autowired private val mockMvc: MockMvc,
     @param:Autowired private val bookRepository: BookRepository,
     @param:Autowired private val categoryRepository: CategoryRepository,
     @param:Autowired private val authorRepository: AuthorRepository
 ) {
 
-    companion object {
-        const val BOOKS_V1_PATH = "/v1/books"
-    }
-
     @Test
-    fun `should be able to list all books`() {
-        val persistedBooks = listOf(persistBook(), persistBook(), persistBook())
+    fun `should be able to find a book by its id`() {
+        val persistedBook = persistBook()
 
-        val mockMvcResult = mockMvc.get(BOOKS_V1_PATH)
+        val mockMvcResult = mockMvc.get(BOOKS_V1_PATH + "/${persistedBook.id}")
             .andExpect { status { isOk()} }
             .andReturn()
 
-        val expectedResponse = BooksResponse.fromEntity(persistedBooks).writeAsJson()
+        val expectedResponse = BookResponse.fromEntity(persistedBook).writeAsJson()
         val actualResponse = mockMvcResult.response.contentAsString
         JSONAssert.assertEquals(expectedResponse, actualResponse, true)
     }
 
     @Test
-    fun `should be able to return empty list when there are no books`() {
-        val persistedBooks = emptyList<Book>()
-
-        val mockMvcResult = mockMvc.get(BOOKS_V1_PATH)
-            .andExpect { status { isOk()} }
-            .andReturn()
-
-        val expectedResponse = BooksResponse.fromEntity(persistedBooks).writeAsJson()
-        val actualResponse = mockMvcResult.response.contentAsString
-        JSONAssert.assertEquals(expectedResponse, actualResponse, true)
+    fun `should return not found when book was not found by the provided id`() {
+        mockMvc.get(BOOKS_V1_PATH + "/${UUID.randomUUID()}").andExpect { status { isNotFound()} }
     }
 
     private fun persistBook(): Book {

@@ -2,8 +2,8 @@ package br.com.study.codedesignpractice.book.controller
 
 import br.com.study.codedesignpractice.author.Author
 import br.com.study.codedesignpractice.book.repository.BookRepository
-import br.com.study.codedesignpractice.book.request.BookRequest
-import br.com.study.codedesignpractice.book.response.BookResponse
+import br.com.study.codedesignpractice.book.controller.request.BookRequest
+import br.com.study.codedesignpractice.book.controller.response.BookResponse
 import br.com.study.codedesignpractice.category.Category
 import io.mockk.every
 import io.mockk.mockk

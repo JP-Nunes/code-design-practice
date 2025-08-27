@@ -2,7 +2,6 @@ package br.com.study.codedesignpractice.book.controller.request
 
 import br.com.study.codedesignpractice.author.Author
 import br.com.study.codedesignpractice.book.repository.Book
-import br.com.study.codedesignpractice.book.request.BookRequest
 import br.com.study.codedesignpractice.category.Category
 import io.mockk.every
 import io.mockk.mockk

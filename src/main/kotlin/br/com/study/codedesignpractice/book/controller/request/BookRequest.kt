@@ -1,4 +1,4 @@
-package br.com.study.codedesignpractice.book.request
+package br.com.study.codedesignpractice.book.controller.request
 
 import br.com.study.codedesignpractice.author.Author
 import br.com.study.codedesignpractice.book.repository.Book
@@ -6,13 +6,9 @@ import br.com.study.codedesignpractice.category.Category
 import br.com.study.codedesignpractice.validator.Unique
 import com.fasterxml.jackson.annotation.JsonFormat
 import jakarta.persistence.EntityManager
-import jakarta.validation.constraints.Future
-import jakarta.validation.constraints.Min
-import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotNull
-import jakarta.validation.constraints.Size
+import jakarta.validation.constraints.*
 import java.time.LocalDate
-import java.util.UUID
+import java.util.*
 
 data class BookRequest(
     @field:NotBlank
