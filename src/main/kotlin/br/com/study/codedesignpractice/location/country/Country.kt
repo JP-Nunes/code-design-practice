@@ -1,4 +1,4 @@
-package br.com.study.codedesignpractice.location
+package br.com.study.codedesignpractice.location.country
 
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -8,6 +8,10 @@ import java.util.*
 
 @Entity
 data class Country(
-    @field:NotBlank val name: String?,
-    @Id @field:GeneratedValue var id: UUID? = null
+    @field:NotBlank
+    val name: String?,
+
+    @Id
+    @field:GeneratedValue
+    var id: UUID? = null
 )

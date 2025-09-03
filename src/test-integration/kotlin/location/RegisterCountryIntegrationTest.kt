@@ -1,9 +1,9 @@
 package location
 
 import br.com.study.codedesignpractice.CodeDesignPracticeApplication
-import br.com.study.codedesignpractice.location.Country
-import br.com.study.codedesignpractice.location.CountryRequest
-import br.com.study.codedesignpractice.location.CountryResponse
+import br.com.study.codedesignpractice.location.country.Country
+import br.com.study.codedesignpractice.location.country.CountryRequest
+import br.com.study.codedesignpractice.location.country.CountryResponse
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jsonMapper
 import com.fasterxml.jackson.module.kotlin.kotlinModule
@@ -25,7 +25,7 @@ import writeAsJson
 )
 @AutoConfigureMockMvc
 @Transactional
-class RegisterCountryIntegrationTest (@param:Autowired private val mockMvc: MockMvc) {
+class RegisterCountryIntegrationTest(@param:Autowired private val mockMvc: MockMvc) {
 
     companion object {
         const val COUNTRIES_V1_PATH = "/v1/countries"

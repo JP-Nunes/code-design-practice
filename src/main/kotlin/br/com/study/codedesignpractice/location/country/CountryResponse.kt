@@ -1,4 +1,4 @@
-package br.com.study.codedesignpractice.location
+package br.com.study.codedesignpractice.location.country
 
 import java.util.UUID
 

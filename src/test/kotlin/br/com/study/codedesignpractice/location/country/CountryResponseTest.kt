@@ -1,4 +1,4 @@
-package br.com.study.codedesignpractice.location
+package br.com.study.codedesignpractice.location.country
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
