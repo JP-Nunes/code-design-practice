@@ -10,9 +10,9 @@ import java.util.*
 
 @Entity
 data class Author(
-    @get:NotBlank var name: String,
-    @get:NotBlank var email: String,
-    @get:NotBlank @get:Size(max = 400) var description: String,
-    @Id @GeneratedValue var id: UUID? = null,
+    @field:NotBlank val name: String,
+    @field:NotBlank val email: String,
+    @field:NotBlank @field:Size(max = 400) val description: String,
+    @Id @GeneratedValue val id: UUID? = null,
     var createdAt: Instant = Instant.now()
 )

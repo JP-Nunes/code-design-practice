@@ -9,4 +9,4 @@ data class CategoryRequest(
     val name: String
 ) {
     fun toEntity() = Category(name = this.name)
-}
+} 

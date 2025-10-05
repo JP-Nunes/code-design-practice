@@ -8,6 +8,6 @@ import java.util.UUID
 
 @Entity
 data class Category(
-    @NotBlank val name: String,
+    @field:NotBlank val name: String,
     @Id @GeneratedValue val id: UUID? = null
 )
