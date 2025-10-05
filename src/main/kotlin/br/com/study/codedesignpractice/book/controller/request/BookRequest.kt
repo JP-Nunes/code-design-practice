@@ -46,6 +46,7 @@ data class BookRequest(
 ) {
 
     fun toEntity(entityManager: EntityManager): Book {
+        // TODO(Rever o tratamento para retornos de entidades nulas sendo usado aqui)
         val category = entityManager.find(
             Category::class.java,
             UUID.fromString(this.categoryId)
