@@ -111,7 +111,7 @@ class RegisterPaymentIntegrationTest(
                     "name": "Brazil"
                   },
                   "state": {
-                    "id": "${paymentResponse.state.id}",
+                    "id": "${paymentResponse.state?.id}",
                     "name": "São Paulo",
                     "country": {
                       "id": "${paymentResponse.country.id}",
@@ -166,10 +166,10 @@ class RegisterPaymentIntegrationTest(
                 createPaymentRequestWithNullEmail
             )
 
-            invalidRequests.forEach { req ->
+            invalidRequests.forEach { request ->
                 mockMvc.post(PAYMENTS_V1_PATH) {
                     contentType = MediaType.APPLICATION_JSON
-                    content = req.writeAsJson()
+                    content = request.writeAsJson()
                 }.andExpect {
                     status { isBadRequest() }
                     content {
@@ -222,10 +222,10 @@ class RegisterPaymentIntegrationTest(
                 createPaymentRequestWithNullFirstName
             )
 
-            invalidRequests.forEach { req ->
+            invalidRequests.forEach { request ->
                 mockMvc.post(PAYMENTS_V1_PATH) {
                     contentType = MediaType.APPLICATION_JSON
-                    content = req.writeAsJson()
+                    content = request.writeAsJson()
                 }.andExpect {
                     status { isBadRequest() }
                     content {
@@ -251,10 +251,10 @@ class RegisterPaymentIntegrationTest(
                 createPaymentRequest(lastName = null, countryId = country.id!!, stateId = state.id!!)
             )
 
-            invalidRequests.forEach { req ->
+            invalidRequests.forEach { request ->
                 mockMvc.post(PAYMENTS_V1_PATH) {
                     contentType = MediaType.APPLICATION_JSON
-                    content = req.writeAsJson()
+                    content = request.writeAsJson()
                 }.andExpect {
                     status { isBadRequest() }
                     content {
@@ -274,11 +274,11 @@ class RegisterPaymentIntegrationTest(
             val country = countryRepository.save(Country(name = "Brazil"))
             val state = stateRepository.save(State(name = "Paraná", country = country))
 
-            val req = createPaymentRequest(document = null, countryId = country.id!!, stateId = state.id!!)
+            val request = createPaymentRequest(document = null, countryId = country.id!!, stateId = state.id!!)
 
             mockMvc.post(PAYMENTS_V1_PATH) {
                 contentType = MediaType.APPLICATION_JSON
-                content = req.writeAsJson()
+                content = request.writeAsJson()
             }.andExpect {
                 status { isBadRequest() }
                 content {
@@ -306,10 +306,10 @@ class RegisterPaymentIntegrationTest(
                 createPaymentRequestWithBlankDocument
             )
 
-            invalidRequests.forEach { req ->
+            invalidRequests.forEach { request ->
                 mockMvc.post(PAYMENTS_V1_PATH) {
                     contentType = MediaType.APPLICATION_JSON
-                    content = req.writeAsJson()
+                    content = request.writeAsJson()
                 }.andExpect {
                     status { isBadRequest() }
                     content {
@@ -328,11 +328,11 @@ class RegisterPaymentIntegrationTest(
             val country = countryRepository.save(Country(name = "Brazil"))
             val state = stateRepository.save(State(name = "Paraná", country = country))
 
-            val req = createPaymentRequest(document = "123", countryId = country.id!!, stateId = state.id!!)
+            val request = createPaymentRequest(document = "123", countryId = country.id!!, stateId = state.id!!)
 
             mockMvc.post(PAYMENTS_V1_PATH) {
                 contentType = MediaType.APPLICATION_JSON
-                content = req.writeAsJson()
+                content = request.writeAsJson()
             }.andExpect {
                 status { isBadRequest() }
                 content {
@@ -360,10 +360,10 @@ class RegisterPaymentIntegrationTest(
                 createPaymentRequest(address = " ",  countryId = country.id!!, stateId = state.id!!)
             )
 
-            invalidRequests.forEach { req ->
+            invalidRequests.forEach { request ->
                 mockMvc.post(PAYMENTS_V1_PATH) {
                     contentType = MediaType.APPLICATION_JSON
-                    content = req.writeAsJson()
+                    content = request.writeAsJson()
                 }.andExpect {
                     status { isBadRequest() }
                     content {
@@ -389,10 +389,10 @@ class RegisterPaymentIntegrationTest(
                 createPaymentRequest(complement = " ", countryId = country.id!!, stateId = state.id!!)
             )
 
-            invalidRequests.forEach { req ->
+            invalidRequests.forEach { request ->
                 mockMvc.post(PAYMENTS_V1_PATH) {
                     contentType = MediaType.APPLICATION_JSON
-                    content = req.writeAsJson()
+                    content = request.writeAsJson()
                 }.andExpect {
                     status { isBadRequest() }
                     content {
@@ -418,10 +418,10 @@ class RegisterPaymentIntegrationTest(
                 createPaymentRequest(city = " ", countryId = country.id!!, stateId = state.id!!)
             )
 
-            invalidRequests.forEach { req ->
+            invalidRequests.forEach { request ->
                 mockMvc.post(PAYMENTS_V1_PATH) {
                     contentType = MediaType.APPLICATION_JSON
-                    content = req.writeAsJson()
+                    content = request.writeAsJson()
                 }.andExpect {
                     status { isBadRequest() }
                     content {
@@ -434,6 +434,92 @@ class RegisterPaymentIntegrationTest(
     }
 
     @Nested
+    inner class TestRegisterPaymentStateIdValidation {
+
+        @Test
+        fun `should be able to register a payment with null stateId if the country has no states registered in the system`() {
+            val country = countryRepository.save(Country(name = "Brazil"))
+
+            val request = createPaymentRequest(countryId = country.id, stateId = null)
+
+            val mockMvcResult = mockMvc.post(PAYMENTS_V1_PATH) {
+                contentType = MediaType.APPLICATION_JSON
+                content = request.writeAsJson()
+            }
+                .andExpect { status { isCreated() } }
+                .andDo { print() }
+                .andReturn()
+
+            val actualResponse = mockMvcResult.response.contentAsString
+            JSONAssert.assertEquals(expectedResponse(mockMvcResult), actualResponse, true)
+        }
+
+        fun expectedResponse(mockMvcResult: MvcResult): String {
+            val mapper = jsonMapper { addModules(kotlinModule(), JavaTimeModule()) }
+            val paymentResponse = mapper.readValue(mockMvcResult.response.contentAsString, CreatePaymentResponse::class.java)
+
+            val expected = """
+                {
+                  "id": "${paymentResponse.id}",
+                  "buyerName": "John",
+                  "buyerLastName": "Doe",
+                  "phone": "+5511999999999",
+                  "email": "test@example.com",
+                  "address": "Av. Paulista, 1000",
+                  "complement": "Ap 101",
+                  "city": "São Paulo",
+                  "country": {
+                    "id": "${paymentResponse.country.id}",
+                    "name": "Brazil"
+                  },
+                  "zipcode": "01310-000"
+                }
+            """.trimIndent()
+
+            return expected
+        }
+
+        @Test
+        fun `should not be able to register a payment with null stateId if the country has states registered in the system`() {
+            val country = countryRepository.save(Country(name = "Brazil"))
+            stateRepository.save(State(name = "São Paulo", country = country))
+
+            val request = createPaymentRequest(countryId = country.id, stateId = null)
+
+            mockMvc.post(PAYMENTS_V1_PATH) {
+                contentType = MediaType.APPLICATION_JSON
+                content = request.writeAsJson()
+            }.andExpect {
+                status { isBadRequest() }
+                content {
+                    contentType(MediaType.APPLICATION_JSON)
+                    json("""{"invalidProperties":["stateId"],"errorMessages":["State does not belong to country"]}""")
+                }
+            }.andDo { print() }
+        }
+
+        @Test
+        fun `should not be able to register a payment with a stateId that does not belong to the country`() {
+            val country = countryRepository.save(Country(name = "Brazil"))
+            val anotherCountry = countryRepository.save(Country(name = "Canada"))
+            val anotherCountryState = stateRepository.save(State(name = "Toronto", country = anotherCountry))
+
+            val request = createPaymentRequest(countryId = country.id, stateId = anotherCountryState.id)
+
+            mockMvc.post(PAYMENTS_V1_PATH) {
+                contentType = MediaType.APPLICATION_JSON
+                content = request.writeAsJson()
+            }.andExpect {
+                status { isBadRequest() }
+                content {
+                    contentType(MediaType.APPLICATION_JSON)
+                    json("""{"invalidProperties":["stateId"],"errorMessages":["State does not belong to country"]}""")
+                }
+            }.andDo { print() }
+        }
+    }
+
+    @Nested
     inner class TestRegisterPaymentCountryIdValidation {
 
         @Test
@@ -441,11 +527,11 @@ class RegisterPaymentIntegrationTest(
             val country = countryRepository.save(Country(name = "Brazil"))
             val state = stateRepository.save(State(name = "São Paulo", country = country))
 
-            val req = createPaymentRequest(countryId = null, stateId = state.id!!)
+            val request = createPaymentRequest(countryId = null, stateId = state.id!!)
 
             mockMvc.post(PAYMENTS_V1_PATH) {
                 contentType = MediaType.APPLICATION_JSON
-                content = req.writeAsJson()
+                content = request.writeAsJson()
             }.andExpect {
                 status { isBadRequest() }
                 content {
@@ -470,10 +556,10 @@ class RegisterPaymentIntegrationTest(
                 createPaymentRequest(zipcode = " ", countryId = country.id!!, stateId = state.id!!)
             )
 
-            invalidRequests.forEach { req ->
+            invalidRequests.forEach { request ->
                 mockMvc.post(PAYMENTS_V1_PATH) {
                     contentType = MediaType.APPLICATION_JSON
-                    content = req.writeAsJson()
+                    content = request.writeAsJson()
                 }.andExpect {
                     status { isBadRequest() }
                     content {
@@ -499,10 +585,10 @@ class RegisterPaymentIntegrationTest(
                 createPaymentRequest(phone = " ", countryId = country.id!!, stateId = state.id!!)
             )
 
-            invalidRequests.forEach { req ->
+            invalidRequests.forEach { request ->
                 mockMvc.post(PAYMENTS_V1_PATH) {
                     contentType = MediaType.APPLICATION_JSON
-                    content = req.writeAsJson()
+                    content = request.writeAsJson()
                 }.andExpect {
                     status { isBadRequest() }
                     content {

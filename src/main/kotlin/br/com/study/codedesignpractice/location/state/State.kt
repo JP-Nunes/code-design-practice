@@ -21,4 +21,7 @@ data class State(
     @Id
     @field:GeneratedValue
     val id: UUID? = null
-)
+) {
+
+    fun belongsTo(country: Country) = this.country == country
+}

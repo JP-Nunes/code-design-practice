@@ -39,6 +39,8 @@ data class CreatePaymentRequest(
     val countryId: UUID?,
 
     @field:Exists(entityClass = State::class, fieldName = "id")
+    //TODO("Se o país tiver estados, é obrigatório selecionar um estado")
+    //TODO("O estado pertence ao país")
     val stateId: UUID?,
 
     @field:NotBlank
@@ -50,7 +52,7 @@ data class CreatePaymentRequest(
 
     fun toEntity(entityManager: EntityManager): Payment {
         val country = requireNotNull(entityManager.find(Country::class.java, this.countryId)) { "Country not found" }
-        val state = requireNotNull(entityManager.find(State::class.java, this.stateId)) { "State not found" }
+        val state = stateId?.let { entityManager.find(State::class.java, this.stateId) }
 
         return Payment(
             email = this.email,

@@ -17,12 +17,14 @@ class PaymentControllerTest {
     private lateinit var paymentController: PaymentController
     private lateinit var paymentRepository: PaymentRepository
     private lateinit var entityManager: EntityManager
+    private lateinit var stateBelongsToCountryValidator: StateBelongsToCountryValidator
 
     @BeforeEach
     fun setUp() {
         paymentRepository = mockk<PaymentRepository>()
         entityManager = mockk<EntityManager>()
-        paymentController = PaymentController(paymentRepository, entityManager)
+        stateBelongsToCountryValidator = mockk<StateBelongsToCountryValidator>()
+        paymentController = PaymentController(paymentRepository, entityManager, stateBelongsToCountryValidator)
     }
 
     @Test
@@ -50,7 +52,7 @@ class PaymentControllerTest {
 
         every { paymentRepository.save(any()) } returns payment
 
-        val expected = ResponseEntity.created(URI("v1/payments/${payment.id}")).body(CreatePaymentResponse.fromEntity(payment))
+        val expected = ResponseEntity.created(URI("/v1/payments/${payment.id}")).body(CreatePaymentResponse.fromEntity(payment))
         val actual = paymentController.registerPayment(createPaymentRequest)
 
         assertThat(actual).isEqualTo(expected)

@@ -37,7 +37,6 @@ class CreatePaymentResponseTest {
                 { p: Payment -> p.copy(complement = null) } to "Complement id cannot be null",
                 { p: Payment -> p.copy(city = null) } to "City id cannot be null",
                 { p: Payment -> p.copy(country = null) } to "Country id cannot be null",
-                { p: Payment -> p.copy(state = null) } to "State id cannot be null",
                 { p: Payment -> p.copy(zipcode = null) } to "Zipcode id cannot be null"
             )
 

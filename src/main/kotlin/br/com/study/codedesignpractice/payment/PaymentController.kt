@@ -3,6 +3,8 @@ package br.com.study.codedesignpractice.payment
 import jakarta.persistence.EntityManager
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.WebDataBinder
+import org.springframework.web.bind.annotation.InitBinder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -15,8 +17,14 @@ const val PAYMENTS_V1_PATH = "/v1/payments"
 @RequestMapping(PAYMENTS_V1_PATH)
 class PaymentController(
     private val paymentRepository: PaymentRepository,
-    private val entityManager: EntityManager
+    private val entityManager: EntityManager,
+    private val stateBelongsToCountryValidator: StateBelongsToCountryValidator
 ) {
+
+    @InitBinder
+    fun initBinder(binder: WebDataBinder) {
+        binder.addValidators(stateBelongsToCountryValidator)
+    }
 
     @PostMapping
     fun registerPayment(
