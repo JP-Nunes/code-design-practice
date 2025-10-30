@@ -5,4 +5,7 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 
 @Repository
-interface StateRepository : CrudRepository<State, UUID>
+interface StateRepository : CrudRepository<State, UUID> {
+
+    fun findByCountryId(countryId: UUID): List<State>
+}
