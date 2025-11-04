@@ -2,53 +2,78 @@ package br.com.study.codedesignpractice.payment
 
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.state.State
+import br.com.study.codedesignpractice.book.repository.Book
 import br.com.study.codedesignpractice.validator.CpfCnpj
 import br.com.study.codedesignpractice.validator.Exists
 import jakarta.persistence.EntityManager
-import jakarta.validation.constraints.Email
-import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotNull
+import jakarta.validation.Valid
+import jakarta.validation.constraints.*
+import java.math.BigDecimal
 import java.util.*
 
-data class CreatePaymentRequest(
-    @field:NotBlank
+ data class CreatePaymentRequest(
+     @field:NotBlank
     @field:Email
     val email: String?,
 
-    @field:NotBlank
+     @field:NotBlank
     val firstName: String?,
 
-    @field:NotBlank
+     @field:NotBlank
     val lastName: String?,
 
-    @field:NotBlank
+     @field:NotBlank
     @field:CpfCnpj
     val document: String?,
 
-    @field:NotBlank
+     @field:NotBlank
     val address: String?,
 
-    @field:NotBlank
+     @field:NotBlank
     val complement: String?,
 
-    @field:NotBlank
+     @field:NotBlank
     val city: String?,
 
-    @field:NotNull
+     @field:NotNull
     @field:Exists(entityClass = Country::class, fieldName = "id")
     val countryId: UUID?,
 
-    @field:Exists(entityClass = State::class, fieldName = "id")
-    //TODO("Se o país tiver estados, é obrigatório selecionar um estado")
-    //TODO("O estado pertence ao país")
+     @field:Exists(entityClass = State::class, fieldName = "id")
     val stateId: UUID?,
 
-    @field:NotBlank
+     @field:NotBlank
     val zipcode: String?,
 
-    @field:NotBlank
+     @field:NotBlank
     val phone: String?,
+
+     @field:NotNull
+     @field:Valid
+    val shoppingCart: ShoppingCart,
 ) {
+
+    data class ShoppingCart(
+        @field:NotNull
+        @field:DecimalMin(value = "0.01", inclusive = true)
+        val total: BigDecimal?,
+
+        @field:NotEmpty
+        @field:Valid
+        val items: List<Item>?,
+    ) {
+
+        data class Item(
+            @field:NotNull
+            @field:Exists(entityClass = Book::class, fieldName = "id")
+            val bookId: UUID?,
+
+            @field:NotNull
+            @field:Min(value = 1)
+            val quantity: Int?
+        )
+    }
+
 
     fun toEntity(entityManager: EntityManager): Payment {
         val country = requireNotNull(entityManager.find(Country::class.java, this.countryId)) { "Country not found" }

@@ -47,10 +47,8 @@ class RegisterBookIntegrationTest(
 
         @Test
         fun `should be able to register a book`() {
-            val categoryEntity = Category(name = "Non Fiction")
-            val authorEntity = author()
-            val persistedCategory = categoryRepository.save(categoryEntity)
-            val persistedAuthor = authorRepository.save(authorEntity)
+            val persistedCategory = categoryRepository.save(Category(name = "Non Fiction"))
+            val persistedAuthor = authorRepository.save(author())
             val bookRequest = bookRequest(
                 categoryId = persistedCategory.id.toString(),
                 authorId = persistedAuthor.id.toString()
@@ -94,10 +92,8 @@ class RegisterBookIntegrationTest(
 
         @Test
         fun `should be able to validate if book title is unique`() {
-            val categoryEntity = Category(name = "Fiction")
-            val authorEntity = author()
-            val persistedCategory = categoryRepository.save(categoryEntity)
-            val persistedAuthor = authorRepository.save(authorEntity)
+            val persistedCategory = categoryRepository.save(Category(name = "Fiction"))
+            val persistedAuthor = authorRepository.save(author())
             val bookRequest = bookRequest(
                 title = "Refactoring",
                 categoryId = persistedCategory.id.toString(),

@@ -1,16 +1,23 @@
 package br.com.study.codedesignpractice.payment
 
+import br.com.study.codedesignpractice.book.repository.Book
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.state.State
+import br.com.study.codedesignpractice.validator.Exists
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.AssertTrue
+import jakarta.validation.constraints.DecimalMin
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotEmpty
+import java.math.BigDecimal
 import java.util.UUID
 
 @Entity
@@ -51,13 +58,32 @@ data class Payment(
     @field:NotBlank
     val zipcode: String?,
 
+//    @field:NotNull
+//    @field:Valid
+//    val shoppingCart: ShoppingCart,
+
     @Id
     @GeneratedValue
-    val id: UUID? = null
+    val id: UUID? = null,
 ) {
 
-    @AssertTrue(message = "state must belong to the specified country")
-    fun isStateFromCountry(): Boolean {
-        return state?.let { it.country == country } ?: true
-    }
+//    data class ShoppingCart(
+//        @field:NotNull
+//        @field:DecimalMin(value = "0.01", inclusive = true)
+//        val total: BigDecimal?,
+//
+//        @field:NotEmpty
+//        @field:Valid
+//        val items: List<Item>?,
+//    ) {
+//
+//        data class Item(
+//            @field:NotNull
+//            val book: Book?,
+//
+//            @field:NotNull
+//            @field:Min(value = 1)
+//            val quantity: Int?
+//        )
+//    }
 }
