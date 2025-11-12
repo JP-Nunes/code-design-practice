@@ -38,7 +38,15 @@ class CreatePaymentRequestTest {
             countryId = country.id!!,
             stateId = state.id!!,
             phone = "+5511988714077",
-            zipcode = "18780-000"
+            zipcode = "18780-000",
+            shoppingCart = CreatePaymentRequest.ShoppingCart(
+                total = 100.0.toBigDecimal(),
+                items = listOf(
+                    shoppingCartItem(),
+                    shoppingCartItem(quantity = 2),
+                    shoppingCartItem(quantity = 20)
+                )
+            )
         )
 
         val expected = with(createPaymentRequest) {
@@ -60,4 +68,6 @@ class CreatePaymentRequestTest {
 
         assertThat(expected).isEqualTo(actual)
     }
+
+    private fun shoppingCartItem(quantity: Int = 1) = CreatePaymentRequest.ShoppingCart.Item(UUID.randomUUID(), quantity = quantity)
 }
