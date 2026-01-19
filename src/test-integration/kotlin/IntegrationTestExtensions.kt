@@ -7,7 +7,7 @@ inline fun <reified T> T.writeAsJson(): String? {
     return jsonMapper.writeValueAsString(this)
 }
 
-inline fun <reified T> String.toClass(clazz: Class<T>): T {
+inline fun <reified T> String.toClass(): T {
     val jsonMapper = jsonMapper { addModules(kotlinModule(), JavaTimeModule()) }
-    return jsonMapper.readValue(this, clazz)
+    return jsonMapper.readValue(this, T::class.java)
 }

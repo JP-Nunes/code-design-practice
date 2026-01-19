@@ -12,68 +12,46 @@ import java.math.BigDecimal
 import java.util.*
 
  data class CreatePaymentRequest(
-     @field:NotBlank
+    @field:NotBlank
     @field:Email
     val email: String?,
 
-     @field:NotBlank
+    @field:NotBlank
     val firstName: String?,
 
-     @field:NotBlank
+    @field:NotBlank
     val lastName: String?,
 
-     @field:NotBlank
+    @field:NotBlank
     @field:CpfCnpj
     val document: String?,
 
-     @field:NotBlank
+    @field:NotBlank
     val address: String?,
 
-     @field:NotBlank
+    @field:NotBlank
     val complement: String?,
 
-     @field:NotBlank
+    @field:NotBlank
     val city: String?,
 
-     @field:NotNull
+    @field:NotNull
     @field:Exists(entityClass = Country::class, fieldName = "id")
     val countryId: UUID?,
 
-     @field:Exists(entityClass = State::class, fieldName = "id")
+    @field:Exists(entityClass = State::class, fieldName = "id")
     val stateId: UUID?,
 
-     @field:NotBlank
+    @field:NotBlank
     val zipcode: String?,
 
-     @field:NotBlank
+    @field:NotBlank
     val phone: String?,
 
-     @field:NotNull
-     @field:Valid
+    @field:NotNull
+    @field:Valid
     val shoppingCart: ShoppingCart,
 ) {
-
-    data class ShoppingCart(
-        @field:NotNull
-        @field:DecimalMin(value = "0.01", inclusive = true)
-        val total: BigDecimal?,
-
-        @field:NotEmpty
-        @field:Valid
-        val items: List<Item>?,
-    ) {
-
-        data class Item(
-            @field:NotNull
-            @field:Exists(entityClass = Book::class, fieldName = "id")
-            val bookId: UUID?,
-
-            @field:NotNull
-            @field:Min(value = 1)
-            val quantity: Int?
-        )
-    }
-
 
     fun toEntity(entityManager: EntityManager): Payment {
         val country = requireNotNull(entityManager.find(Country::class.java, this.countryId)) { "Country not found" }
@@ -90,7 +68,35 @@ import java.util.*
             country = country,
             state = state,
             phone = this.phone,
-            zipcode = this.zipcode
+            zipcode = this.zipcode,
+            shoppingCart = Payment.ShoppingCart(
+                total = this.shoppingCart.total,
+                items = this.shoppingCart.items?.map {
+                    val book = requireNotNull(entityManager.find(Book::class.java, it.bookId)) { "Book not found" }
+                    Payment.ShoppingCart.Item(book, it.quantity)
+                }
+            )
         )
     }
+
+     data class ShoppingCart(
+         @field:NotNull
+         @field:DecimalMin(value = "0.01", inclusive = true)
+         val total: BigDecimal?,
+
+         @field:NotEmpty
+         @field:Valid
+         val items: List<Item>?,
+     ) {
+
+         data class Item(
+             @field:NotNull
+             @field:Exists(entityClass = Book::class, fieldName = "id")
+             val bookId: UUID?,
+
+             @field:NotNull
+             @field:Min(value = 1)
+             val quantity: Int?
+         )
+     }
 }

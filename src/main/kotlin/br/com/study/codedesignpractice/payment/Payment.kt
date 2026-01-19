@@ -3,22 +3,16 @@ package br.com.study.codedesignpractice.payment
 import br.com.study.codedesignpractice.book.repository.Book
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.state.State
-import br.com.study.codedesignpractice.validator.Exists
+import br.com.study.codedesignpractice.validator.CpfCnpj
+import jakarta.persistence.ElementCollection
+import jakarta.persistence.Embeddable
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
 import jakarta.validation.Valid
-import jakarta.validation.constraints.Email
-import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotNull
-import jakarta.validation.constraints.Pattern
-import jakarta.validation.constraints.AssertTrue
-import jakarta.validation.constraints.DecimalMin
-import jakarta.validation.constraints.Min
-import jakarta.validation.constraints.NotEmpty
+import jakarta.validation.constraints.*
 import java.math.BigDecimal
-import java.util.UUID
 import java.util.*
 
 @Entity
@@ -34,7 +28,7 @@ data class Payment(
     val lastName: String?,
 
     @field:NotBlank
-    @field:Pattern(regexp = "^\\d{11}$|^\\d{14}$", message = "document must be a CPF (11 digits) or CNPJ (14 digits)")
+    @CpfCnpj
     val document: String?,
 
     @field:NotBlank
@@ -59,32 +53,36 @@ data class Payment(
     @field:NotBlank
     val zipcode: String?,
 
-//    @field:NotNull
-//    @field:Valid
-//    val shoppingCart: ShoppingCart,
+    @field:NotNull
+    @field:Valid
+    val shoppingCart: ShoppingCart?,
 
-    @Id
-    @GeneratedValue
+    @field:Id
+    @field:GeneratedValue
     val id: UUID? = null,
 ) {
 
-//    data class ShoppingCart(
-//        @field:NotNull
-//        @field:DecimalMin(value = "0.01", inclusive = true)
-//        val total: BigDecimal?,
-//
-//        @field:NotEmpty
-//        @field:Valid
-//        val items: List<Item>?,
-//    ) {
-//
-//        data class Item(
-//            @field:NotNull
-//            val book: Book?,
-//
-//            @field:NotNull
-//            @field:Min(value = 1)
-//            val quantity: Int?
-//        )
-//    }
+    @Embeddable
+    data class ShoppingCart(
+        @field:NotNull
+        @field:DecimalMin(value = "0.01", inclusive = true)
+        val total: BigDecimal?,
+
+        @field:NotEmpty
+        @field:Valid
+        @ElementCollection
+        val items: List<Item>?,
+    ) {
+
+        @Embeddable
+        data class Item(
+            @field:NotNull
+            @field:ManyToOne
+            val book: Book?,
+
+            @field:NotNull
+            @field:Min(value = 1)
+            val quantity: Int?
+        )
+    }
 }

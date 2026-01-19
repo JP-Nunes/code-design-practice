@@ -96,7 +96,7 @@ class RegisterPaymentIntegrationTest(
     }
 
     fun expectedResponse(mockMvcResult: MvcResult): String {
-        val paymentResponse = mockMvcResult.response.contentAsString.toClass(CreatePaymentResponse::class.java)
+        val paymentResponse = mockMvcResult.response.contentAsString.toClass<CreatePaymentResponse>()
 
         val expected = """
             {

@@ -1,5 +1,8 @@
 package br.com.study.codedesignpractice.payment
 
+import br.com.study.codedesignpractice.author.Author
+import br.com.study.codedesignpractice.book.repository.Book
+import br.com.study.codedesignpractice.category.Category
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.state.State
 import org.assertj.core.api.Assertions.assertThat
@@ -7,6 +10,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
+import java.time.LocalDate
 
 @DataJpaTest
 class PaymentRepositoryTest @Autowired constructor(
@@ -18,6 +22,34 @@ class PaymentRepositoryTest @Autowired constructor(
     fun `should be able to register a new payment`() {
         val country = Country(name = "Brazil")
         val state = State(name = "São Paulo", country = country)
+
+        entityManager.persist(country)
+        entityManager.persist(state)
+
+        val category = Category(name = "fiction")
+        val author = Author(
+            name = "John Doe",
+            email = "john.doe@hotmail.com",
+            description = "A sample author"
+        )
+
+        val persistedCategory = entityManager.persist(category)
+        val persistedAuthor = entityManager.persist(author)
+
+        val book = Book(
+            title = "Book Title",
+            summary = "Book summary",
+            tableOfContents = "Markdown table of contents",
+            price = 250,
+            numberOfPages = 150,
+            isbn = "123-456-789",
+            publishDate = LocalDate.now().plusDays(10),
+            category = persistedCategory!!,
+            author = persistedAuthor!!
+        )
+
+        val persistedBook = entityManager.persist(book)
+
         val payment = Payment(
             email = "user@buyer.com",
             firstName = "Zacarias",
@@ -29,11 +61,15 @@ class PaymentRepositoryTest @Autowired constructor(
             country = country,
             state = state,
             phone = "+5511988714077",
-            zipcode = "01310-000"
+            zipcode = "01310-000",
+            shoppingCart = Payment.ShoppingCart(
+                total = 100.0.toBigDecimal(),
+                items = listOf(
+                    Payment.ShoppingCart.Item(book = persistedBook, quantity = 2)
+                )
+            )
         )
 
-        entityManager.persist(country)
-        entityManager.persist(state)
         entityManager.persist(payment)
         entityManager.flush()
 

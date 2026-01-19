@@ -67,6 +67,7 @@ class CreatePaymentResponseTest {
             state = State(name = "Rio de Janeiro", country = country, id = UUID.randomUUID()),
             phone = "+5521988714077",
             zipcode = "01310-000",
+            shoppingCart = Payment.ShoppingCart(total = 100.0.toBigDecimal(), items = listOf()),
             id = UUID.randomUUID()
         )
     }

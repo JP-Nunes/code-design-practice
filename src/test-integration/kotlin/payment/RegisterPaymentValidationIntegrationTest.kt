@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.post
 import org.springframework.transaction.annotation.Transactional
 import writeAsJson
+import java.util.UUID
 
 @SpringBootTest(
     classes = [CodeDesignPracticeApplication::class],
@@ -441,6 +442,29 @@ class RegisterPaymentValidationIntegrationTests(
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
             val request = createPaymentRequest(countryId = country.id, stateId = null, shoppingCartItemId = book.id)
+
+            mockMvc.post(PAYMENTS_V1_PATH) {
+                contentType = MediaType.APPLICATION_JSON
+                content = request.writeAsJson()
+            }.andExpect {
+                status { isBadRequest() }
+                content {
+                    contentType(MediaType.APPLICATION_JSON)
+                    json("""{"invalidProperties":["stateId"],"errorMessages":["State does not belong to country"]}""")
+                }
+            }.andDo { print() }
+        }
+
+        @Test
+        fun `should not be able to register a payment with stateId if the country has no states registered in the system`() {
+            val persistedCountry = countryRepository.save(Country(name = "Brazil"))
+            val otherPersistedCountry = countryRepository.save(Country(name = "Estados Unidos"))
+            val persistedState = stateRepository.save(State(name = "California", country = otherPersistedCountry))
+            val persistedCategory = categoryRepository.save(Category(name = "Non Fiction"))
+            val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
+            val book = bookRepository.save(book(persistedCategory, persistedAuthor))
+
+            val request = createPaymentRequest(countryId = persistedCountry.id, stateId = persistedState.id, shoppingCartItemId = book.id)
 
             mockMvc.post(PAYMENTS_V1_PATH) {
                 contentType = MediaType.APPLICATION_JSON

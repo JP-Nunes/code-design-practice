@@ -1,5 +1,8 @@
 package br.com.study.codedesignpractice.payment
 
+import br.com.study.codedesignpractice.author.Author
+import br.com.study.codedesignpractice.book.repository.Book
+import br.com.study.codedesignpractice.category.Category
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.state.State
 import io.mockk.every
@@ -10,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.ResponseEntity
 import java.net.URI
+import java.time.LocalDate
 import java.util.*
 
 class PaymentControllerTest {
@@ -34,6 +38,13 @@ class PaymentControllerTest {
         every { entityManager.find(Country::class.java, country.id!!) } returns country
         every { entityManager.find(State::class.java, state.id!!) } returns state
 
+        val books = listOf(
+            book(id = UUID.randomUUID()),
+            book(id = UUID.randomUUID()),
+            book(id = UUID.randomUUID())
+        )
+        books.forEach { every { entityManager.find(Book::class.java, it.id!!) } returns it }
+
         val createPaymentRequest = CreatePaymentRequest(
             email = "test@example.com",
             firstName = "John",
@@ -48,23 +59,39 @@ class PaymentControllerTest {
             zipcode = "01310-000",
             shoppingCart = CreatePaymentRequest.ShoppingCart(
                 total = 100.0.toBigDecimal(),
-                items = listOf(
-                    shoppingCartItem(),
-                    shoppingCartItem(quantity = 2),
-                    shoppingCartItem(quantity = 20)
-                )
+                items = books.map { shoppingCartItem(it.id!!) }
             )
         )
 
-        val payment = createPaymentRequest.toEntity(entityManager).copy(id = UUID.randomUUID())
+        val payment = createPaymentRequest.toEntity(entityManager)
+        val persistedPayment = payment.copy(id = UUID.randomUUID())
 
-        every { paymentRepository.save(any()) } returns payment
+        every { paymentRepository.save(payment) } returns persistedPayment
 
-        val expected = ResponseEntity.created(URI("/v1/payments/${payment.id}")).body(CreatePaymentResponse.fromEntity(payment))
+        val expected = ResponseEntity
+            .created(URI("/v1/payments/${persistedPayment.id}"))
+            .body(CreatePaymentResponse.fromEntity(persistedPayment))
         val actual = paymentController.registerPayment(createPaymentRequest)
-
         assertThat(actual).isEqualTo(expected)
     }
 
-    private fun shoppingCartItem(quantity: Int = 1) = CreatePaymentRequest.ShoppingCart.Item(UUID.randomUUID(), quantity = quantity)
+    private fun book(id: UUID): Book = Book(
+        title = "Book One",
+        summary = "First book summary",
+        tableOfContents = "TOC 1",
+        price = 300,
+        numberOfPages = 200,
+        isbn = "111-111-111",
+        publishDate = LocalDate.now().plusDays(15),
+        category = Category(name = "romance"),
+        author = Author(
+            name = "John Doe",
+            email = "john.doe@outlook.com",
+            description = "A lovely author full of love",
+        ),
+        id = id
+    )
+
+    private fun shoppingCartItem(bookId: UUID) =
+        CreatePaymentRequest.ShoppingCart.Item(bookId = bookId, quantity = 2)
 }
