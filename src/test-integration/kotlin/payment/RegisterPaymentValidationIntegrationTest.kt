@@ -10,6 +10,7 @@ import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.country.CountryRepository
 import br.com.study.codedesignpractice.location.state.State
 import br.com.study.codedesignpractice.location.state.StateRepository
+import br.com.study.codedesignpractice.payment.CreatePaymentRequest
 import br.com.study.codedesignpractice.payment.CreatePaymentResponse
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jsonMapper
@@ -27,7 +28,6 @@ import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.post
 import org.springframework.transaction.annotation.Transactional
 import writeAsJson
-import java.util.UUID
 
 @SpringBootTest(
     classes = [CodeDesignPracticeApplication::class],
@@ -55,7 +55,15 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
-            val createPaymentRequestWithBlank = createPaymentRequest(email = " ", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
+            val createPaymentRequestWithBlank = createPaymentRequest(
+                email = " ",
+                countryId = country.id!!,
+                stateId = state.id!!,
+                shoppingCart = CreatePaymentRequest.ShoppingCart(
+                    total = 1.toBigDecimal(),
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                )
+            )
 
             mockMvc.post(PAYMENTS_V1_PATH) {
                 contentType = MediaType.APPLICATION_JSON
@@ -80,10 +88,14 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
+            val shoppingCart = CreatePaymentRequest.ShoppingCart(
+                total = 1.toBigDecimal(),
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+            )
             val createPaymentRequestWithEmptyEmail =
-                createPaymentRequest(email = "", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
+                createPaymentRequest(email = "", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart)
             val createPaymentRequestWithNullEmail =
-                createPaymentRequest(email = null, countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
+                createPaymentRequest(email = null, countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart)
 
             val invalidRequests = listOf(
                 createPaymentRequestWithEmptyEmail,
@@ -115,8 +127,15 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
-            val createPaymentRequestWithInvalidEmail =
-                createPaymentRequest(email = "invalid-email", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
+            val createPaymentRequestWithInvalidEmail = createPaymentRequest(
+                email = "invalid-email",
+                countryId = country.id!!,
+                stateId = state.id!!,
+                shoppingCart = CreatePaymentRequest.ShoppingCart(
+                    total = 1.toBigDecimal(),
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                )
+            )
 
             mockMvc.post(PAYMENTS_V1_PATH) {
                 contentType = MediaType.APPLICATION_JSON
@@ -142,9 +161,13 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
-            val createPaymentRequestWithBlankFirstName = createPaymentRequest(firstName = " ", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
-            val createPaymentRequestWithEmptyFirstName = createPaymentRequest(firstName = "", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
-            val createPaymentRequestWithNullFirstName = createPaymentRequest(firstName = null, countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
+            val shoppingCart = CreatePaymentRequest.ShoppingCart(
+                total = 1.toBigDecimal(),
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+            )
+            val createPaymentRequestWithBlankFirstName = createPaymentRequest(firstName = " ", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart)
+            val createPaymentRequestWithEmptyFirstName = createPaymentRequest(firstName = "", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart)
+            val createPaymentRequestWithNullFirstName = createPaymentRequest(firstName = null, countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart)
 
             val invalidRequests = listOf(
                 createPaymentRequestWithBlankFirstName,
@@ -178,10 +201,14 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
+            val shoppingCart = CreatePaymentRequest.ShoppingCart(
+                total = 1.toBigDecimal(),
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+            )
             val invalidRequests = listOf(
-                createPaymentRequest(lastName = " ", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id),
-                createPaymentRequest(lastName = "", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id),
-                createPaymentRequest(lastName = null, countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
+                createPaymentRequest(lastName = " ", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
+                createPaymentRequest(lastName = "", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
+                createPaymentRequest(lastName = null, countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart)
             )
 
             invalidRequests.forEach { request ->
@@ -210,7 +237,15 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
-            val request = createPaymentRequest(document = null, countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
+            val request = createPaymentRequest(
+                document = null,
+                countryId = country.id!!,
+                stateId = state.id!!,
+                shoppingCart = CreatePaymentRequest.ShoppingCart(
+                    total = 1.toBigDecimal(),
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                )
+            )
 
             mockMvc.post(PAYMENTS_V1_PATH) {
                 contentType = MediaType.APPLICATION_JSON
@@ -235,10 +270,22 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
-            val createPaymentRequestWithEmptyDocument =
-                createPaymentRequest(document = "", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
-            val createPaymentRequestWithBlankDocument =
-                createPaymentRequest(document = " ", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
+            val shoppingCart = CreatePaymentRequest.ShoppingCart(
+                total = 1.toBigDecimal(),
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+            )
+            val createPaymentRequestWithEmptyDocument = createPaymentRequest(
+                document = "",
+                countryId = country.id!!,
+                stateId = state.id!!,
+                shoppingCart = shoppingCart
+            )
+            val createPaymentRequestWithBlankDocument = createPaymentRequest(
+                document = " ",
+                countryId = country.id!!,
+                stateId = state.id!!,
+                shoppingCart = shoppingCart
+            )
 
             val invalidRequests = listOf(
                 createPaymentRequestWithEmptyDocument,
@@ -270,7 +317,15 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
-            val request = createPaymentRequest(document = "123", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
+            val request = createPaymentRequest(
+                document = "123",
+                countryId = country.id!!,
+                stateId = state.id!!,
+                shoppingCart = CreatePaymentRequest.ShoppingCart(
+                    total = 1.toBigDecimal(),
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                )
+            )
 
             mockMvc.post(PAYMENTS_V1_PATH) {
                 contentType = MediaType.APPLICATION_JSON
@@ -299,10 +354,14 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
+            val shoppingCart = CreatePaymentRequest.ShoppingCart(
+                total = 1.toBigDecimal(),
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+            )
             val invalidRequests = listOf(
-                createPaymentRequest(address = null,  countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id),
-                createPaymentRequest(address = "", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id),
-                createPaymentRequest(address = " ",  countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
+                createPaymentRequest(address = null,  countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
+                createPaymentRequest(address = "", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
+                createPaymentRequest(address = " ",  countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart)
             )
 
             invalidRequests.forEach { request ->
@@ -331,10 +390,14 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
+            val shoppingCart = CreatePaymentRequest.ShoppingCart(
+                total = 1.toBigDecimal(),
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+            )
             val invalidRequests = listOf(
-                createPaymentRequest(complement = null, countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id),
-                createPaymentRequest(complement = "", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id),
-                createPaymentRequest(complement = " ", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
+                createPaymentRequest(complement = null, countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
+                createPaymentRequest(complement = "", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
+                createPaymentRequest(complement = " ", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart)
             )
 
             invalidRequests.forEach { request ->
@@ -363,10 +426,14 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
+            val shoppingCart = CreatePaymentRequest.ShoppingCart(
+                total = 1.toBigDecimal(),
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+            )
             val invalidRequests = listOf(
-                createPaymentRequest(city = null, countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id),
-                createPaymentRequest(city = "", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id),
-                createPaymentRequest(city = " ", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
+                createPaymentRequest(city = null, countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
+                createPaymentRequest(city = "", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
+                createPaymentRequest(city = " ", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart)
             )
 
             invalidRequests.forEach { request ->
@@ -394,7 +461,14 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
-            val request = createPaymentRequest(countryId = country.id, stateId = null, shoppingCartItemId = book.id)
+            val request = createPaymentRequest(
+                countryId = country.id,
+                stateId = null,
+                shoppingCart = CreatePaymentRequest.ShoppingCart(
+                    total = 1.toBigDecimal(),
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                )
+            )
 
             val mockMvcResult = mockMvc.post(PAYMENTS_V1_PATH) {
                 contentType = MediaType.APPLICATION_JSON
@@ -441,7 +515,14 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
-            val request = createPaymentRequest(countryId = country.id, stateId = null, shoppingCartItemId = book.id)
+            val request = createPaymentRequest(
+                countryId = country.id,
+                stateId = null,
+                shoppingCart = CreatePaymentRequest.ShoppingCart(
+                    total = 1.toBigDecimal(),
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                )
+            )
 
             mockMvc.post(PAYMENTS_V1_PATH) {
                 contentType = MediaType.APPLICATION_JSON
@@ -464,7 +545,14 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
-            val request = createPaymentRequest(countryId = persistedCountry.id, stateId = persistedState.id, shoppingCartItemId = book.id)
+            val request = createPaymentRequest(
+                countryId = persistedCountry.id,
+                stateId = persistedState.id,
+                shoppingCart = CreatePaymentRequest.ShoppingCart(
+                    total = 1.toBigDecimal(),
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                )
+            )
 
             mockMvc.post(PAYMENTS_V1_PATH) {
                 contentType = MediaType.APPLICATION_JSON
@@ -487,7 +575,14 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
-            val request = createPaymentRequest(countryId = country.id, stateId = anotherCountryState.id, shoppingCartItemId = book.id)
+            val request = createPaymentRequest(
+                countryId = country.id,
+                stateId = anotherCountryState.id,
+                shoppingCart = CreatePaymentRequest.ShoppingCart(
+                    total = 1.toBigDecimal(),
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                )
+            )
 
             mockMvc.post(PAYMENTS_V1_PATH) {
                 contentType = MediaType.APPLICATION_JSON
@@ -513,7 +608,14 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
-            val request = createPaymentRequest(countryId = null, stateId = state.id!!, shoppingCartItemId = book.id)
+            val request = createPaymentRequest(
+                countryId = null,
+                stateId = state.id!!,
+                shoppingCart = CreatePaymentRequest.ShoppingCart(
+                    total = 1.toBigDecimal(),
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                )
+            )
 
             mockMvc.post(PAYMENTS_V1_PATH) {
                 contentType = MediaType.APPLICATION_JSON
@@ -539,10 +641,14 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
+            val shoppingCart = CreatePaymentRequest.ShoppingCart(
+                total = 1.toBigDecimal(),
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+            )
             val invalidRequests = listOf(
-                createPaymentRequest(zipcode = null, countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id),
-                createPaymentRequest(zipcode = "", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id),
-                createPaymentRequest(zipcode = " ", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
+                createPaymentRequest(zipcode = null, countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
+                createPaymentRequest(zipcode = "", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
+                createPaymentRequest(zipcode = " ", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart)
             )
 
             invalidRequests.forEach { request ->
@@ -571,10 +677,14 @@ class RegisterPaymentValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
+            val shoppingCart = CreatePaymentRequest.ShoppingCart(
+                total = 1.toBigDecimal(),
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+            )
             val invalidRequests = listOf(
-                createPaymentRequest(phone = null, countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id),
-                createPaymentRequest(phone = "", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id),
-                createPaymentRequest(phone = " ", countryId = country.id!!, stateId = state.id!!, shoppingCartItemId = book.id)
+                createPaymentRequest(phone = null, countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
+                createPaymentRequest(phone = "", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
+                createPaymentRequest(phone = " ", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart)
             )
 
             invalidRequests.forEach { request ->

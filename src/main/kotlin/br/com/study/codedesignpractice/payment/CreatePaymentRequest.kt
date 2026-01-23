@@ -3,6 +3,7 @@ package br.com.study.codedesignpractice.payment
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.state.State
 import br.com.study.codedesignpractice.book.repository.Book
+import br.com.study.codedesignpractice.book.repository.findBooksByIds
 import br.com.study.codedesignpractice.validator.CpfCnpj
 import br.com.study.codedesignpractice.validator.Exists
 import jakarta.persistence.EntityManager
@@ -50,34 +51,23 @@ import java.util.*
 
     @field:NotNull
     @field:Valid
-    val shoppingCart: ShoppingCart,
+    val shoppingCart: ShoppingCart?,
 ) {
 
-    fun toEntity(entityManager: EntityManager): Payment {
-        val country = requireNotNull(entityManager.find(Country::class.java, this.countryId)) { "Country not found" }
-        val state = stateId?.let { entityManager.find(State::class.java, this.stateId) }
-
-        return Payment(
-            email = this.email,
-            firstName = this.firstName,
-            lastName = this.lastName,
-            document = this.document,
-            address = this.address,
-            complement = this.complement,
-            city = this.city,
-            country = country,
-            state = state,
-            phone = this.phone,
-            zipcode = this.zipcode,
-            shoppingCart = Payment.ShoppingCart(
-                total = this.shoppingCart.total,
-                items = this.shoppingCart.items?.map {
-                    val book = requireNotNull(entityManager.find(Book::class.java, it.bookId)) { "Book not found" }
-                    Payment.ShoppingCart.Item(book, it.quantity)
-                }
-            )
-        )
-    }
+    fun toEntity(entityManager: EntityManager) = Payment(
+        email = this.email,
+        firstName = this.firstName,
+        lastName = this.lastName,
+        document = this.document,
+        address = this.address,
+        complement = this.complement,
+        city = this.city,
+        country = entityManager.find(Country::class.java, this.countryId),
+        state = entityManager.find(State::class.java, this.stateId),
+        phone = this.phone,
+        zipcode = this.zipcode,
+        shoppingCart = this.shoppingCart?.toEntity(entityManager) ?: throw IllegalArgumentException("A payment needs a shopping cart")
+    )
 
      data class ShoppingCart(
          @field:NotNull
@@ -88,6 +78,22 @@ import java.util.*
          @field:Valid
          val items: List<Item>?,
      ) {
+         fun toEntity(entityManager: EntityManager): Payment.ShoppingCart {
+             val books: List<Book> = this.items?.let { items ->
+                 val booksIds = items.mapNotNull { it.bookId }
+                 entityManager.findBooksByIds(booksIds)
+             } ?: emptyList()
+
+             return Payment.ShoppingCart(
+                 total = this.total,
+                 items = this.items?.map { bookRequest ->
+                     Payment.ShoppingCart.Item(
+                         book = books.find { it.id == bookRequest.bookId },
+                         quantity = bookRequest.quantity
+                     )
+                 }
+             )
+         }
 
          data class Item(
              @field:NotNull

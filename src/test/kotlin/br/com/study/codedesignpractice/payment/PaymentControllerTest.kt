@@ -2,6 +2,7 @@ package br.com.study.codedesignpractice.payment
 
 import br.com.study.codedesignpractice.author.Author
 import br.com.study.codedesignpractice.book.repository.Book
+import br.com.study.codedesignpractice.book.repository.findBooksByIds
 import br.com.study.codedesignpractice.category.Category
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.state.State
@@ -43,7 +44,7 @@ class PaymentControllerTest {
             book(id = UUID.randomUUID()),
             book(id = UUID.randomUUID())
         )
-        books.forEach { every { entityManager.find(Book::class.java, it.id!!) } returns it }
+        every { entityManager.findBooksByIds(books.map { it.id!! }) } returns books
 
         val createPaymentRequest = CreatePaymentRequest(
             email = "test@example.com",

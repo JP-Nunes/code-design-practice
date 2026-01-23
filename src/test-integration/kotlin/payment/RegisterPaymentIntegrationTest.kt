@@ -10,6 +10,7 @@ import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.country.CountryRepository
 import br.com.study.codedesignpractice.location.state.State
 import br.com.study.codedesignpractice.location.state.StateRepository
+import br.com.study.codedesignpractice.payment.CreatePaymentRequest
 import br.com.study.codedesignpractice.payment.CreatePaymentResponse
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
@@ -52,7 +53,10 @@ class RegisterPaymentIntegrationTest(
             countryId = country.id!!,
             stateId = state.id!!,
             document = cpf,
-            shoppingCartItemId = book.id!!
+            shoppingCart = CreatePaymentRequest.ShoppingCart(
+                total = 1.toBigDecimal(),
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+            )
         )
 
         val mockMvcResult = mockMvc.post(PAYMENTS_V1_PATH) {
@@ -80,7 +84,10 @@ class RegisterPaymentIntegrationTest(
             countryId = country.id!!,
             stateId = state.id!!,
             document = cnpj,
-            shoppingCartItemId = book.id
+            shoppingCart = CreatePaymentRequest.ShoppingCart(
+                total = 1.toBigDecimal(),
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+            )
         )
 
         val mockMvcResult = mockMvc.post(PAYMENTS_V1_PATH) {
