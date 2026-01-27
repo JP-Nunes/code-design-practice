@@ -61,7 +61,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = state.id!!,
                 shoppingCart = CreatePaymentRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
-                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
 
@@ -90,7 +90,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePaymentRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val createPaymentRequestWithEmptyEmail =
                 createPaymentRequest(email = "", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart)
@@ -133,7 +133,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = state.id!!,
                 shoppingCart = CreatePaymentRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
-                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
 
@@ -163,7 +163,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePaymentRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val createPaymentRequestWithBlankFirstName = createPaymentRequest(firstName = " ", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart)
             val createPaymentRequestWithEmptyFirstName = createPaymentRequest(firstName = "", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart)
@@ -203,7 +203,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePaymentRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val invalidRequests = listOf(
                 createPaymentRequest(lastName = " ", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
@@ -243,7 +243,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = state.id!!,
                 shoppingCart = CreatePaymentRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
-                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
 
@@ -272,7 +272,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePaymentRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val createPaymentRequestWithEmptyDocument = createPaymentRequest(
                 document = "",
@@ -323,7 +323,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = state.id!!,
                 shoppingCart = CreatePaymentRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
-                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
 
@@ -356,7 +356,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePaymentRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val invalidRequests = listOf(
                 createPaymentRequest(address = null,  countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
@@ -392,7 +392,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePaymentRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val invalidRequests = listOf(
                 createPaymentRequest(complement = null, countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
@@ -428,7 +428,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePaymentRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val invalidRequests = listOf(
                 createPaymentRequest(city = null, countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
@@ -466,7 +466,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = null,
                 shoppingCart = CreatePaymentRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
-                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
 
@@ -520,7 +520,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = null,
                 shoppingCart = CreatePaymentRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
-                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
 
@@ -550,7 +550,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = persistedState.id,
                 shoppingCart = CreatePaymentRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
-                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
 
@@ -580,7 +580,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = anotherCountryState.id,
                 shoppingCart = CreatePaymentRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
-                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
 
@@ -613,7 +613,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = state.id!!,
                 shoppingCart = CreatePaymentRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
-                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                    items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
 
@@ -643,7 +643,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePaymentRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val invalidRequests = listOf(
                 createPaymentRequest(zipcode = null, countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),
@@ -679,7 +679,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePaymentRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val invalidRequests = listOf(
                 createPaymentRequest(phone = null, countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart),

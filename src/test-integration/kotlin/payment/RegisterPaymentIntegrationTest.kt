@@ -55,7 +55,7 @@ class RegisterPaymentIntegrationTest(
             document = cpf,
             shoppingCart = CreatePaymentRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
         )
 
@@ -86,7 +86,7 @@ class RegisterPaymentIntegrationTest(
             document = cnpj,
             shoppingCart = CreatePaymentRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                items = listOf(CreatePaymentRequest.ShoppingCart.Item(bookId = book.id!!, quantity = 1))
+                items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
         )
 

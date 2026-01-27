@@ -63,7 +63,7 @@ import java.util.*
         complement = this.complement,
         city = this.city,
         country = entityManager.find(Country::class.java, this.countryId),
-        state = entityManager.find(State::class.java, this.stateId),
+        state = this.stateId?.let { entityManager.find(State::class.java, this.stateId) },
         phone = this.phone,
         zipcode = this.zipcode,
         shoppingCart = this.shoppingCart?.toEntity(entityManager) ?: throw IllegalArgumentException("A payment needs a shopping cart")
@@ -80,7 +80,7 @@ import java.util.*
      ) {
          fun toEntity(entityManager: EntityManager): Payment.ShoppingCart {
              val books: List<Book> = this.items?.let { items ->
-                 val booksIds = items.mapNotNull { it.bookId }
+                 val booksIds = items.mapNotNull { it.id }
                  entityManager.findBooksByIds(booksIds)
              } ?: emptyList()
 
@@ -88,7 +88,7 @@ import java.util.*
                  total = this.total,
                  items = this.items?.map { bookRequest ->
                      Payment.ShoppingCart.Item(
-                         book = books.find { it.id == bookRequest.bookId },
+                         book = books.find { it.id == bookRequest.id },
                          quantity = bookRequest.quantity
                      )
                  }
@@ -98,7 +98,7 @@ import java.util.*
          data class Item(
              @field:NotNull
              @field:Exists(entityClass = Book::class, fieldName = "id")
-             val bookId: UUID?,
+             val id: UUID?,
 
              @field:NotNull
              @field:Min(value = 1)

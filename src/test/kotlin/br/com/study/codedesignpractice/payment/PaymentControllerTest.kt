@@ -94,5 +94,5 @@ class PaymentControllerTest {
     )
 
     private fun shoppingCartItem(bookId: UUID) =
-        CreatePaymentRequest.ShoppingCart.Item(bookId = bookId, quantity = 2)
+        CreatePaymentRequest.ShoppingCart.Item(id = bookId, quantity = 2)
 }

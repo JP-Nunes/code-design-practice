@@ -58,7 +58,7 @@ class CreatePaymentRequestTest {
                     total = shoppingCart.total,
                     items =  shoppingCart.items?.map { bookRequest ->
                         Payment.ShoppingCart.Item(
-                            book = books.find { it.id == bookRequest.bookId },
+                            book = books.find { it.id == bookRequest.id },
                             bookRequest.quantity
                         )
                     }
@@ -112,5 +112,5 @@ class CreatePaymentRequestTest {
     )
 
     private fun shoppingCartItem(id: UUID, quantity: Int = 1) =
-        CreatePaymentRequest.ShoppingCart.Item(bookId = id, quantity = quantity)
+        CreatePaymentRequest.ShoppingCart.Item(id = id, quantity = quantity)
 }
