@@ -1,4 +1,4 @@
-package br.com.study.codedesignpractice.payment
+package br.com.study.codedesignpractice.purchase
 
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.country.CountryResponse
@@ -17,7 +17,7 @@ class CreatePaymentResponseTest {
         val payment = payment()
 
         val expected = convertToCreatePaymentResponse(payment)
-        val actual = CreatePaymentResponse.fromEntity(payment)
+        val actual = CreatePurchaseResponse.fromEntity(payment)
 
         assertThat(expected).isEqualTo(actual)
     }
@@ -28,16 +28,16 @@ class CreatePaymentResponseTest {
         @Test
         fun `should validate if any payment field that should not be null is returning null when converting to CreatePaymentResponse`() {
             val nullFieldCases = listOf(
-                { p: Payment -> p.copy(id = null) } to "Payment id cannot be null",
-                { p: Payment -> p.copy(firstName = null) } to "First name cannot be null",
-                { p: Payment -> p.copy(lastName = null) } to "Last name cannot be null",
-                { p: Payment -> p.copy(phone = null) } to "Phone id cannot be null",
-                { p: Payment -> p.copy(email = null) } to "Email id cannot be null",
-                { p: Payment -> p.copy(address = null) } to "Address id cannot be null",
-                { p: Payment -> p.copy(complement = null) } to "Complement id cannot be null",
-                { p: Payment -> p.copy(city = null) } to "City id cannot be null",
-                { p: Payment -> p.copy(country = null) } to "Country id cannot be null",
-                { p: Payment -> p.copy(zipcode = null) } to "Zipcode id cannot be null"
+                { p: Purchase -> p.copy(id = null) } to "Payment id cannot be null",
+                { p: Purchase -> p.copy(firstName = null) } to "First name cannot be null",
+                { p: Purchase -> p.copy(lastName = null) } to "Last name cannot be null",
+                { p: Purchase -> p.copy(phone = null) } to "Phone id cannot be null",
+                { p: Purchase -> p.copy(email = null) } to "Email id cannot be null",
+                { p: Purchase -> p.copy(address = null) } to "Address id cannot be null",
+                { p: Purchase -> p.copy(complement = null) } to "Complement id cannot be null",
+                { p: Purchase -> p.copy(city = null) } to "City id cannot be null",
+                { p: Purchase -> p.copy(country = null) } to "Country id cannot be null",
+                { p: Purchase -> p.copy(zipcode = null) } to "Zipcode id cannot be null"
             )
 
             val payment = payment()
@@ -45,7 +45,7 @@ class CreatePaymentResponseTest {
                 val invalidPaymentWithNullField = paymentModifier(payment)
 
                 val actualException = assertThrows<IllegalArgumentException> {
-                    CreatePaymentResponse.fromEntity(invalidPaymentWithNullField)
+                    CreatePurchaseResponse.fromEntity(invalidPaymentWithNullField)
                 }
 
                 assertThat(actualException.message).isEqualTo(expectedMessage)
@@ -53,9 +53,9 @@ class CreatePaymentResponseTest {
         }
     }
 
-    private fun payment(): Payment {
+    private fun payment(): Purchase {
         val country = Country(name = "Brazil", id = UUID.randomUUID())
-        return Payment(
+        return Purchase(
             email = "user.buyer@goodman.com",
             firstName = "Good",
             lastName = "Buyer",
@@ -67,12 +67,13 @@ class CreatePaymentResponseTest {
             state = State(name = "Rio de Janeiro", country = country, id = UUID.randomUUID()),
             phone = "+5521988714077",
             zipcode = "01310-000",
+            shoppingCart = Purchase.ShoppingCart(total = 100.0.toBigDecimal(), items = listOf()),
             id = UUID.randomUUID()
         )
     }
 
-    private fun convertToCreatePaymentResponse(payment: Payment): CreatePaymentResponse = with(payment) {
-        CreatePaymentResponse(
+    private fun convertToCreatePaymentResponse(purchase: Purchase): CreatePurchaseResponse = with(purchase) {
+        CreatePurchaseResponse(
             id = this.id!!,
             buyerName = this.firstName!!,
             buyerLastName = this.lastName!!,

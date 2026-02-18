@@ -1,7 +1,8 @@
-package br.com.study.codedesignpractice.payment
+package br.com.study.codedesignpractice.validator
 
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.state.StateRepository
+import br.com.study.codedesignpractice.purchase.CreatePurchaseRequest
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Component
@@ -15,20 +16,20 @@ class StateBelongsToCountryValidator(
 ) : Validator {
 
     override fun supports(clazz: Class<*>): Boolean {
-        return clazz.isAssignableFrom(CreatePaymentRequest::class.java)
+        return clazz.isAssignableFrom(CreatePurchaseRequest::class.java)
     }
 
     override fun validate(target: Any, errors: Errors) {
         if (errors.hasErrors()) return
 
-        val createPaymentRequest = target as CreatePaymentRequest
-        val country = entityManager.find(Country::class.java, createPaymentRequest.countryId) ?: run {
+        val createPurchaseRequest = target as CreatePurchaseRequest
+        val country = entityManager.find(Country::class.java, createPurchaseRequest.countryId) ?: run {
             errors.rejectValue("countryId", "", "Country not found")
             return
         }
 
-        if (country.hasRegisteredStates() || createPaymentRequest.stateId != null) {
-            country.states().find { it.id == createPaymentRequest.stateId } ?: run {
+        if (country.hasRegisteredStates() || createPurchaseRequest.stateId != null) {
+            country.states().find { it.id == createPurchaseRequest.stateId } ?: run {
                 errors.rejectValue("stateId", "", "State does not belong to country")
                 return
             }

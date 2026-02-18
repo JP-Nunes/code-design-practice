@@ -1,5 +1,6 @@
-package br.com.study.codedesignpractice.payment
+package br.com.study.codedesignpractice.purchase
 
+import br.com.study.codedesignpractice.validator.StateBelongsToCountryValidator
 import jakarta.persistence.EntityManager
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -16,7 +17,7 @@ const val PAYMENTS_V1_PATH = "/v1/payments"
 @RestController
 @RequestMapping(PAYMENTS_V1_PATH)
 class PaymentController(
-    private val paymentRepository: PaymentRepository,
+    private val purchaseRepository: PurchaseRepository,
     private val entityManager: EntityManager,
     private val stateBelongsToCountryValidator: StateBelongsToCountryValidator
 ) {
@@ -28,11 +29,11 @@ class PaymentController(
 
     @PostMapping
     fun registerPayment(
-        @RequestBody @Valid createPaymentRequest: CreatePaymentRequest
-    ): ResponseEntity<CreatePaymentResponse> {
-        val payment = paymentRepository.save(createPaymentRequest.toEntity(entityManager))
+        @RequestBody @Valid createPurchaseRequest: CreatePurchaseRequest
+    ): ResponseEntity<CreatePurchaseResponse> {
+        val payment = purchaseRepository.save(createPurchaseRequest.toEntity(entityManager))
         return ResponseEntity
             .created(URI("$PAYMENTS_V1_PATH/${payment.id}"))
-            .body(CreatePaymentResponse.fromEntity(payment))
+            .body(CreatePurchaseResponse.fromEntity(payment))
     }
 }

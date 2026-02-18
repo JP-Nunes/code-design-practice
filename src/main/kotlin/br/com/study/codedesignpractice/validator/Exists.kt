@@ -34,7 +34,7 @@ class ExistsValidator() : ConstraintValidator<Exists, UUID> {
     }
 
     override fun isValid(value: UUID?, context: ConstraintValidatorContext?): Boolean {
-        if (value == null) return true // Null values are considered valid, handled by @NotNull if needed
+        if (value == null) return true
 
         val query = entityManager.createQuery("select 1 from ${kClass.jvmName} where $fieldName=:value")
         query.setParameter("value", value)
