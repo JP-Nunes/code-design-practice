@@ -1,4 +1,4 @@
-package br.com.study.codedesignpractice.payment
+package br.com.study.codedesignpractice.purchase
 
 import br.com.study.codedesignpractice.author.Author
 import br.com.study.codedesignpractice.book.repository.Book
@@ -6,6 +6,7 @@ import br.com.study.codedesignpractice.book.repository.findBooksByIds
 import br.com.study.codedesignpractice.category.Category
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.state.State
+import br.com.study.codedesignpractice.validator.StateBelongsToCountryValidator
 import io.mockk.every
 import io.mockk.mockk
 import jakarta.persistence.EntityManager
@@ -20,16 +21,16 @@ import java.util.*
 class PaymentControllerTest {
 
     private lateinit var paymentController: PaymentController
-    private lateinit var paymentRepository: PaymentRepository
+    private lateinit var purchaseRepository: PurchaseRepository
     private lateinit var entityManager: EntityManager
     private lateinit var stateBelongsToCountryValidator: StateBelongsToCountryValidator
 
     @BeforeEach
     fun setUp() {
-        paymentRepository = mockk<PaymentRepository>()
+        purchaseRepository = mockk<PurchaseRepository>()
         entityManager = mockk<EntityManager>()
         stateBelongsToCountryValidator = mockk<StateBelongsToCountryValidator>()
-        paymentController = PaymentController(paymentRepository, entityManager, stateBelongsToCountryValidator)
+        paymentController = PaymentController(purchaseRepository, entityManager, stateBelongsToCountryValidator)
     }
 
     @Test
@@ -46,7 +47,7 @@ class PaymentControllerTest {
         )
         every { entityManager.findBooksByIds(books.map { it.id!! }) } returns books
 
-        val createPaymentRequest = CreatePaymentRequest(
+        val createPurchaseRequest = CreatePurchaseRequest(
             email = "test@example.com",
             firstName = "John",
             lastName = "Doe",
@@ -58,21 +59,21 @@ class PaymentControllerTest {
             stateId = state.id,
             phone = "+5511987654321",
             zipcode = "01310-000",
-            shoppingCart = CreatePaymentRequest.ShoppingCart(
+            shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 100.0.toBigDecimal(),
                 items = books.map { shoppingCartItem(it.id!!) }
             )
         )
 
-        val payment = createPaymentRequest.toEntity(entityManager)
+        val payment = createPurchaseRequest.toEntity(entityManager)
         val persistedPayment = payment.copy(id = UUID.randomUUID())
 
-        every { paymentRepository.save(payment) } returns persistedPayment
+        every { purchaseRepository.save(payment) } returns persistedPayment
 
         val expected = ResponseEntity
             .created(URI("/v1/payments/${persistedPayment.id}"))
-            .body(CreatePaymentResponse.fromEntity(persistedPayment))
-        val actual = paymentController.registerPayment(createPaymentRequest)
+            .body(CreatePurchaseResponse.fromEntity(persistedPayment))
+        val actual = paymentController.registerPayment(createPurchaseRequest)
         assertThat(actual).isEqualTo(expected)
     }
 
@@ -94,5 +95,5 @@ class PaymentControllerTest {
     )
 
     private fun shoppingCartItem(bookId: UUID) =
-        CreatePaymentRequest.ShoppingCart.Item(id = bookId, quantity = 2)
+        CreatePurchaseRequest.ShoppingCart.Item(id = bookId, quantity = 2)
 }

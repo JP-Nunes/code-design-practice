@@ -1,4 +1,4 @@
-package br.com.study.codedesignpractice.payment
+package br.com.study.codedesignpractice.purchase
 
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.state.State
@@ -12,7 +12,7 @@ import jakarta.validation.constraints.*
 import java.math.BigDecimal
 import java.util.*
 
- data class CreatePaymentRequest(
+ data class CreatePurchaseRequest(
     @field:NotBlank
     @field:Email
     val email: String?,

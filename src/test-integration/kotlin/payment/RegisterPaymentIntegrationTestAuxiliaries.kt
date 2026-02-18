@@ -3,7 +3,7 @@ package payment
 import br.com.study.codedesignpractice.author.Author
 import br.com.study.codedesignpractice.book.repository.Book
 import br.com.study.codedesignpractice.category.Category
-import br.com.study.codedesignpractice.payment.CreatePaymentRequest
+import br.com.study.codedesignpractice.purchase.CreatePurchaseRequest
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
@@ -22,8 +22,8 @@ fun createPaymentRequest(
     stateId: UUID?,
     zipcode: String? = "01310-000",
     phone: String? = "+5511999999999",
-    shoppingCart: CreatePaymentRequest.ShoppingCart? = defaultShoppingCart()
-) = CreatePaymentRequest(
+    shoppingCart: CreatePurchaseRequest.ShoppingCart? = defaultShoppingCart()
+) = CreatePurchaseRequest(
     email = email,
     firstName = firstName,
     lastName = lastName,
@@ -38,9 +38,9 @@ fun createPaymentRequest(
     shoppingCart = shoppingCart
 )
 
-private fun defaultShoppingCart() = CreatePaymentRequest.ShoppingCart(
+private fun defaultShoppingCart() = CreatePurchaseRequest.ShoppingCart(
     total = BigDecimal(100),
-    listOf(CreatePaymentRequest.ShoppingCart.Item(UUID.randomUUID(), quantity = 2))
+    listOf(CreatePurchaseRequest.ShoppingCart.Item(UUID.randomUUID(), quantity = 2))
 )
 
 fun book(persistedCategory: Category, persistedAuthor: Author) = Book(

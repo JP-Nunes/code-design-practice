@@ -1,4 +1,4 @@
-package br.com.study.codedesignpractice.payment
+package br.com.study.codedesignpractice.purchase
 
 import br.com.study.codedesignpractice.author.Author
 import br.com.study.codedesignpractice.book.repository.Book
@@ -90,8 +90,8 @@ class CreatePaymentRequestTest {
     private fun createPaymentRequest(
         country: Country,
         state: State,
-        shoppingCart: CreatePaymentRequest.ShoppingCart?
-    ): CreatePaymentRequest = CreatePaymentRequest(
+        shoppingCart: CreatePurchaseRequest.ShoppingCart?
+    ): CreatePurchaseRequest = CreatePurchaseRequest(
         email = "nice_user@goodpayer.com",
         firstName = "Johnny",
         lastName = "B. Good",
@@ -106,11 +106,11 @@ class CreatePaymentRequestTest {
         shoppingCart = shoppingCart
     )
 
-    private fun shoppingCart(books: List<Book>): CreatePaymentRequest.ShoppingCart = CreatePaymentRequest.ShoppingCart(
+    private fun shoppingCart(books: List<Book>): CreatePurchaseRequest.ShoppingCart = CreatePurchaseRequest.ShoppingCart(
         total = 100.0.toBigDecimal(),
         items = books.map { shoppingCartItem(it.id!!) }
     )
 
     private fun shoppingCartItem(id: UUID, quantity: Int = 1) =
-        CreatePaymentRequest.ShoppingCart.Item(id = id, quantity = quantity)
+        CreatePurchaseRequest.ShoppingCart.Item(id = id, quantity = quantity)
 }

@@ -1,4 +1,4 @@
-package br.com.study.codedesignpractice.payment
+package br.com.study.codedesignpractice.purchase
 
 import br.com.study.codedesignpractice.location.country.CountryResponse
 import br.com.study.codedesignpractice.location.state.CreateStateResponse
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class CreatePaymentResponse(
+data class CreatePurchaseResponse(
     val id: UUID,
     val buyerName: String,
     val buyerLastName: String,
@@ -22,9 +22,9 @@ data class CreatePaymentResponse(
 
     companion object {
 
-        fun fromEntity(purchase: Purchase): CreatePaymentResponse {
+        fun fromEntity(purchase: Purchase): CreatePurchaseResponse {
             return with(purchase) {
-                CreatePaymentResponse(
+                CreatePurchaseResponse(
                     id = requireNotNull(this.id) { "Payment id cannot be null" },
                     buyerName = requireNotNull(this.firstName) { "First name cannot be null" },
                     buyerLastName = requireNotNull(this.lastName) { "Last name cannot be null" },

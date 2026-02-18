@@ -1,4 +1,4 @@
-package br.com.study.codedesignpractice.payment
+package br.com.study.codedesignpractice.purchase
 
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.country.CountryResponse
@@ -17,7 +17,7 @@ class CreatePaymentResponseTest {
         val payment = payment()
 
         val expected = convertToCreatePaymentResponse(payment)
-        val actual = CreatePaymentResponse.fromEntity(payment)
+        val actual = CreatePurchaseResponse.fromEntity(payment)
 
         assertThat(expected).isEqualTo(actual)
     }
@@ -45,7 +45,7 @@ class CreatePaymentResponseTest {
                 val invalidPaymentWithNullField = paymentModifier(payment)
 
                 val actualException = assertThrows<IllegalArgumentException> {
-                    CreatePaymentResponse.fromEntity(invalidPaymentWithNullField)
+                    CreatePurchaseResponse.fromEntity(invalidPaymentWithNullField)
                 }
 
                 assertThat(actualException.message).isEqualTo(expectedMessage)
@@ -72,8 +72,8 @@ class CreatePaymentResponseTest {
         )
     }
 
-    private fun convertToCreatePaymentResponse(purchase: Purchase): CreatePaymentResponse = with(purchase) {
-        CreatePaymentResponse(
+    private fun convertToCreatePaymentResponse(purchase: Purchase): CreatePurchaseResponse = with(purchase) {
+        CreatePurchaseResponse(
             id = this.id!!,
             buyerName = this.firstName!!,
             buyerLastName = this.lastName!!,

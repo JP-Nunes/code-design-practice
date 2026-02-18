@@ -1,4 +1,4 @@
-package br.com.study.codedesignpractice.payment
+package br.com.study.codedesignpractice.purchase
 
 import br.com.study.codedesignpractice.author.Author
 import br.com.study.codedesignpractice.book.repository.Book
@@ -14,7 +14,7 @@ import java.time.LocalDate
 
 @DataJpaTest
 class PaymentRepositoryTest @Autowired constructor(
-    val paymentRepository: PaymentRepository,
+    val purchaseRepository: PurchaseRepository,
     val entityManager: TestEntityManager
 ) {
 
@@ -73,7 +73,7 @@ class PaymentRepositoryTest @Autowired constructor(
         entityManager.persist(purchase)
         entityManager.flush()
 
-        val persistedPayment = paymentRepository.findById(purchase.id!!).get()
+        val persistedPayment = purchaseRepository.findById(purchase.id!!).get()
 
         assertThat(persistedPayment).isEqualTo(purchase)
     }

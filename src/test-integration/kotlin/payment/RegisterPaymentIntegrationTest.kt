@@ -10,8 +10,8 @@ import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.country.CountryRepository
 import br.com.study.codedesignpractice.location.state.State
 import br.com.study.codedesignpractice.location.state.StateRepository
-import br.com.study.codedesignpractice.payment.CreatePaymentRequest
-import br.com.study.codedesignpractice.payment.CreatePaymentResponse
+import br.com.study.codedesignpractice.purchase.CreatePurchaseRequest
+import br.com.study.codedesignpractice.purchase.CreatePurchaseResponse
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import org.springframework.beans.factory.annotation.Autowired
@@ -53,9 +53,9 @@ class RegisterPaymentIntegrationTest(
             countryId = country.id!!,
             stateId = state.id!!,
             document = cpf,
-            shoppingCart = CreatePaymentRequest.ShoppingCart(
+            shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
+                items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
         )
 
@@ -84,9 +84,9 @@ class RegisterPaymentIntegrationTest(
             countryId = country.id!!,
             stateId = state.id!!,
             document = cnpj,
-            shoppingCart = CreatePaymentRequest.ShoppingCart(
+            shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                items = listOf(CreatePaymentRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
+                items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
         )
 
@@ -103,7 +103,7 @@ class RegisterPaymentIntegrationTest(
     }
 
     fun expectedResponse(mockMvcResult: MvcResult): String {
-        val paymentResponse = mockMvcResult.response.contentAsString.toClass<CreatePaymentResponse>()
+        val paymentResponse = mockMvcResult.response.contentAsString.toClass<CreatePurchaseResponse>()
 
         val expected = """
             {
