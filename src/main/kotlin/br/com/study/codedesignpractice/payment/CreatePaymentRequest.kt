@@ -54,7 +54,7 @@ import java.util.*
     val shoppingCart: ShoppingCart?,
 ) {
 
-    fun toEntity(entityManager: EntityManager) = Payment(
+    fun toEntity(entityManager: EntityManager) = Purchase(
         email = this.email,
         firstName = this.firstName,
         lastName = this.lastName,
@@ -78,16 +78,16 @@ import java.util.*
          @field:Valid
          val items: List<Item>?,
      ) {
-         fun toEntity(entityManager: EntityManager): Payment.ShoppingCart {
+         fun toEntity(entityManager: EntityManager): Purchase.ShoppingCart {
              val books: List<Book> = this.items?.let { items ->
                  val booksIds = items.mapNotNull { it.id }
                  entityManager.findBooksByIds(booksIds)
              } ?: emptyList()
 
-             return Payment.ShoppingCart(
+             return Purchase.ShoppingCart(
                  total = this.total,
                  items = this.items?.map { bookRequest ->
-                     Payment.ShoppingCart.Item(
+                     Purchase.ShoppingCart.Item(
                          book = books.find { it.id == bookRequest.id },
                          quantity = bookRequest.quantity
                      )

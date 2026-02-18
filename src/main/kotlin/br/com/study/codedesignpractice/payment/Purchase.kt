@@ -16,7 +16,7 @@ import java.math.BigDecimal
 import java.util.*
 
 @Entity
-data class Payment(
+data class Purchase(
     @field:NotBlank
     @field:Email
     val email: String?,

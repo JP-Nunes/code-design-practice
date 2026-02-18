@@ -22,8 +22,8 @@ data class CreatePaymentResponse(
 
     companion object {
 
-        fun fromEntity(payment: Payment): CreatePaymentResponse {
-            return with(payment) {
+        fun fromEntity(purchase: Purchase): CreatePaymentResponse {
+            return with(purchase) {
                 CreatePaymentResponse(
                     id = requireNotNull(this.id) { "Payment id cannot be null" },
                     buyerName = requireNotNull(this.firstName) { "First name cannot be null" },

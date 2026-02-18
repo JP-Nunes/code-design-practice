@@ -42,7 +42,7 @@ class CreatePaymentRequestTest {
         )
 
         val expected = with(createPaymentRequest) {
-            Payment(
+            Purchase(
                 email = this.email,
                 firstName = this.firstName,
                 lastName = this.lastName,
@@ -54,10 +54,10 @@ class CreatePaymentRequestTest {
                 state = state,
                 phone = this.phone,
                 zipcode = this.zipcode,
-                shoppingCart = Payment.ShoppingCart(
+                shoppingCart = Purchase.ShoppingCart(
                     total = shoppingCart.total,
                     items =  shoppingCart.items?.map { bookRequest ->
-                        Payment.ShoppingCart.Item(
+                        Purchase.ShoppingCart.Item(
                             book = books.find { it.id == bookRequest.id },
                             bookRequest.quantity
                         )

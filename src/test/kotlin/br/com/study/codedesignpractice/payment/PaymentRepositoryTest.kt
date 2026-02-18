@@ -50,7 +50,7 @@ class PaymentRepositoryTest @Autowired constructor(
 
         val persistedBook = entityManager.persist(book)
 
-        val payment = Payment(
+        val purchase = Purchase(
             email = "user@buyer.com",
             firstName = "Zacarias",
             lastName = "Stoth",
@@ -62,19 +62,19 @@ class PaymentRepositoryTest @Autowired constructor(
             state = state,
             phone = "+5511988714077",
             zipcode = "01310-000",
-            shoppingCart = Payment.ShoppingCart(
+            shoppingCart = Purchase.ShoppingCart(
                 total = 100.0.toBigDecimal(),
                 items = listOf(
-                    Payment.ShoppingCart.Item(book = persistedBook, quantity = 2)
+                    Purchase.ShoppingCart.Item(book = persistedBook, quantity = 2)
                 )
             )
         )
 
-        entityManager.persist(payment)
+        entityManager.persist(purchase)
         entityManager.flush()
 
-        val persistedPayment = paymentRepository.findById(payment.id!!).get()
+        val persistedPayment = paymentRepository.findById(purchase.id!!).get()
 
-        assertThat(persistedPayment).isEqualTo(payment)
+        assertThat(persistedPayment).isEqualTo(purchase)
     }
  }
