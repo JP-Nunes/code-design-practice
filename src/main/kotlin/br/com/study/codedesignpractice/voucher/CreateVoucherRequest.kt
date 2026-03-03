@@ -1,0 +1,27 @@
+package br.com.study.codedesignpractice.voucher
+
+import jakarta.validation.constraints.Future
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Positive
+import java.math.BigDecimal
+import java.time.LocalDate
+
+class CreateVoucherRequest(
+    @field:NotBlank
+    val code: String?,
+
+    @field:NotNull
+    @field:Positive
+    val discount: BigDecimal?,
+
+    @field:NotNull
+    @field:Future
+    val expirationDate: LocalDate?
+) {
+    fun toEntity() = Voucher(
+        code = this.code,
+        discount = this.discount,
+        expirationDate = this.expirationDate
+    )
+}

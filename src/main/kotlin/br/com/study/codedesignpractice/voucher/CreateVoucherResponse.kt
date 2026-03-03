@@ -1,0 +1,16 @@
+package br.com.study.codedesignpractice.voucher
+
+import java.math.BigDecimal
+import java.time.LocalDate
+
+class CreateVoucherResponse(
+    val code: String,
+    val discount: BigDecimal,
+    val expirationDate: LocalDate
+)
+
+fun Voucher.toResponse() = CreateVoucherResponse(
+    code = this.code ?: throw IllegalStateException("Voucher code is mandatory"),
+    discount = this.discount ?: throw IllegalStateException("Voucher discount is mandatory"),
+    expirationDate = this.expirationDate ?: throw IllegalStateException("Voucher expirationDate is mandatory"),
+)
