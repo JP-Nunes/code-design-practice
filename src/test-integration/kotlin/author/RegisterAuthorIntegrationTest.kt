@@ -62,6 +62,8 @@ class RegisterAuthorIntegrationTest(@param:Autowired private val mockMvc: MockMv
 
     @Test
     fun `should be able to validate null properties that shoud not be null`() {
+        val invalidAuthorRequestWithNullFields = """{}""".trimIndent()
+
         mockMvc.post(AUTHORS_V1_PATH) {
             contentType = MediaType.APPLICATION_JSON
             characterEncoding = "UTF-8"
@@ -71,10 +73,16 @@ class RegisterAuthorIntegrationTest(@param:Autowired private val mockMvc: MockMv
         }
     }
 
-    val invalidAuthorRequestWithNullFields = """{}""".trimIndent()
-
     @Test
     fun `should be able to validate empty properties that shoud not be empty`() {
+        val invalidAuthorRequestWithEmptyFields = """
+            {
+                "name": "",
+                "email": "",
+                "description": ""
+            }
+        """.trimIndent()
+
         mockMvc.post(AUTHORS_V1_PATH) {
             contentType = MediaType.APPLICATION_JSON
             characterEncoding = "UTF-8"
@@ -84,16 +92,16 @@ class RegisterAuthorIntegrationTest(@param:Autowired private val mockMvc: MockMv
         }
     }
 
-    val invalidAuthorRequestWithEmptyFields = """
-        {
-            "name": "",
-            "email": "",
-            "description": ""
-        }
-    """.trimIndent()
-
     @Test
     fun `should be able to validate blank properties that shoud not be blank`() {
+        val invalidAuthorRequestWithBlankFields = """
+            {
+                "name": " ",
+                "email": " ",
+                "description": " "
+            }
+        """.trimIndent()
+
         mockMvc.post(AUTHORS_V1_PATH) {
             contentType = MediaType.APPLICATION_JSON
             characterEncoding = "UTF-8"
@@ -102,12 +110,4 @@ class RegisterAuthorIntegrationTest(@param:Autowired private val mockMvc: MockMv
             status { isBadRequest() }
         }
     }
-
-    val invalidAuthorRequestWithBlankFields = """
-        {
-            "name": " ",
-            "email": " ",
-            "description": " "
-        }
-    """.trimIndent()
 }
