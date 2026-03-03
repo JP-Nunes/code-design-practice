@@ -23,5 +23,6 @@ class CountryRepositoryTest @Autowired constructor(
         val persistedCountry = countryRepository.findByIdOrNull(country.id!!)
 
         assertThat(persistedCountry).isEqualTo(country)
+        assertThat(persistedCountry?.id).isNotNull()
     }
 }
