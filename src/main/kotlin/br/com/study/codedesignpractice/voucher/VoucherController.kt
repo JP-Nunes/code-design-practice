@@ -20,7 +20,7 @@ class VoucherController(private val voucherRepository: VoucherRepository) {
     ): ResponseEntity<CreateVoucherResponse> {
         val voucher = voucherRepository.save(createVoucherRequest.toEntity())
         return ResponseEntity
-            .created(URI("$VOUCHERS_V1_PATH/${voucher.id}"))
-            .body(voucher.toResponse())
+            .created(URI("$VOUCHERS_V1_PATH/${voucher.code}"))
+            .body(voucher.toCreateVoucherResponse())
     }
 }

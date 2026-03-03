@@ -12,7 +12,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 @Entity
-class Voucher(
+data class Voucher(
     @field:NotBlank
     val code: String?,
 

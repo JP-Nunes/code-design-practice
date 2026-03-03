@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Positive
 import java.math.BigDecimal
 import java.time.LocalDate
 
-class CreateVoucherRequest(
+data class CreateVoucherRequest(
     @field:NotBlank
     val code: String?,
 
