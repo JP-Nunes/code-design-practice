@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @SpringBootTest(
     classes = [CodeDesignPracticeApplication::class],
@@ -27,7 +29,7 @@ class RegisterVoucherIntegrationTest() {
 
     @Test
     fun `should be able to register a voucher in the database and return response`() {
-        val tomorrow = LocalDate.now().plusDays(1)
+        val tomorrow = LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         val validVoucherRequest = """
             {
                 "code": "SUMMER-10",
@@ -36,13 +38,24 @@ class RegisterVoucherIntegrationTest() {
             }
         """.trimIndent()
 
+        val expectedResponse = """
+            {
+                "code": "SUMMER-10",
+                "discount": 10,
+                "expirationDate": "$tomorrow"
+            }
+        """.trimIndent()
+
         mockMvc.post(VOUCHERS_V1_PATH) {
             contentType = MediaType.APPLICATION_JSON
             characterEncoding = "UTF-8"
             content = validVoucherRequest
-        }.andExpect {
-            status { isCreated() }
         }
+            .andExpect {
+                status { isCreated() }
+                content { json(jsonContent = expectedResponse, compareMode = JsonCompareMode.STRICT) }
+            }
+            .andDo { println() }
     }
 
     @Test

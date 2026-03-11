@@ -1,5 +1,6 @@
 package br.com.study.codedesignpractice.voucher
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import jakarta.validation.constraints.Future
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
@@ -17,6 +18,7 @@ data class CreateVoucherRequest(
 
     @field:NotNull
     @field:Future
+    @field:JsonFormat(pattern = "dd/MM/yyyy")
     val expirationDate: LocalDate?
 ) {
     fun toEntity() = Voucher(

@@ -1,11 +1,14 @@
 package br.com.study.codedesignpractice.voucher
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import java.math.BigDecimal
 import java.time.LocalDate
 
 data class CreateVoucherResponse(
     val code: String,
     val discount: BigDecimal,
+
+    @field:JsonFormat(pattern = "dd/MM/yyyy")
     val expirationDate: LocalDate
 )
 
