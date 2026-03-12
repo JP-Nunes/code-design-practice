@@ -12,7 +12,7 @@ import jakarta.validation.constraints.*
 import java.math.BigDecimal
 import java.util.*
 
- data class CreatePurchaseRequest(
+data class CreatePurchaseRequest(
     @field:NotBlank
     @field:Email
     val email: String?,
@@ -86,11 +86,8 @@ import java.util.*
 
              return Purchase.ShoppingCart(
                  total = this.total,
-                 items = this.items?.map { bookRequest ->
-                     Purchase.ShoppingCart.Item(
-                         book = books.find { it.id == bookRequest.id },
-                         quantity = bookRequest.quantity
-                     )
+                 items = this.items?.map { itemRequest ->
+                     itemRequest.toEntity(books.find { it.id == itemRequest.id })
                  }
              )
          }
@@ -103,6 +100,11 @@ import java.util.*
              @field:NotNull
              @field:Min(value = 1)
              val quantity: Int?
-         )
+         ) {
+             fun toEntity(book: Book?) = Purchase.ShoppingCart.Item(
+                 book = book,
+                 quantity = this.quantity
+             )
+         }
      }
 }
