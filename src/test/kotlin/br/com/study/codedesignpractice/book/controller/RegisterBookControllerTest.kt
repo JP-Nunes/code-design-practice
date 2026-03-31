@@ -61,7 +61,7 @@ class RegisterBookControllerTest {
         title = "Effective Kotlin",
         summary = "A book about effective Kotlin practices.",
         tableOfContents = "1. Introduction\n2. Basics",
-        price = 30,
+        price = 30.toBigDecimal(),
         numberOfPages = 200,
         isbn = "123-4567890123",
         publishDate = LocalDate.now().plusDays(1),

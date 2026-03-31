@@ -16,7 +16,7 @@ class BookResponseTest {
             title = "Book Title",
             summary = "Book summary",
             tableOfContents = "Markdown table of contents",
-            price = 250,
+            price = 250.toBigDecimal(),
             numberOfPages = 150,
             isbn = "123-456-789",
             publishDate = LocalDate.now().plusDays(10),

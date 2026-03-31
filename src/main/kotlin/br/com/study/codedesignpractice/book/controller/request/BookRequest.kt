@@ -7,6 +7,7 @@ import br.com.study.codedesignpractice.validator.Unique
 import com.fasterxml.jackson.annotation.JsonFormat
 import jakarta.persistence.EntityManager
 import jakarta.validation.constraints.*
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
 
@@ -23,7 +24,7 @@ data class BookRequest(
 
     @field:NotNull
     @field:Min(20)
-    val price: Int?,
+    val price: BigDecimal?,
 
     @field:NotNull
     @field:Min(100)

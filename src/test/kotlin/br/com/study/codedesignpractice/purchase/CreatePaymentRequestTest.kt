@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.util.*
+import kotlin.collections.sumOf
 
 class CreatePaymentRequestTest {
 
@@ -34,14 +35,13 @@ class CreatePaymentRequestTest {
         every { entityManager.find(State::class.java, state.id!!) } returns state
         every { entityManager.findBooksByIds(books.map { it.id!! }) } returns books
 
-        val shoppingCart = shoppingCart(books)
-        val createPaymentRequest = createPaymentRequest(
+        val createPurchaseRequest = createPurchaseRequest(
             country = country,
             state = state,
-            shoppingCart = shoppingCart
+            shoppingCart = shoppingCartRequest(books)
         )
 
-        val expected = with(createPaymentRequest) {
+        val expected = with(createPurchaseRequest) {
             Purchase(
                 email = this.email,
                 firstName = this.firstName,
@@ -55,8 +55,8 @@ class CreatePaymentRequestTest {
                 phone = this.phone,
                 zipcode = this.zipcode,
                 shoppingCart = Purchase.ShoppingCart(
-                    total = shoppingCart.total,
-                    items =  shoppingCart.items?.map { bookRequest ->
+                    total = books.sumOf { it.price!! },
+                    items =  shoppingCart!!.items!!.map { bookRequest ->
                         Purchase.ShoppingCart.Item(
                             book = books.find { it.id == bookRequest.id },
                             bookRequest.quantity
@@ -65,7 +65,7 @@ class CreatePaymentRequestTest {
                 )
             )
         }
-        val actual = createPaymentRequest.toEntity(entityManager)
+        val actual = createPurchaseRequest.toEntity(entityManager)
 
         assertThat(expected).isEqualTo(actual)
     }
@@ -74,7 +74,7 @@ class CreatePaymentRequestTest {
         title = "Book Title",
         summary = "Book summary",
         tableOfContents = "Markdown table of contents",
-        price = 250,
+        price = 250.toBigDecimal(),
         numberOfPages = 150,
         isbn = "123-456-789",
         publishDate = LocalDate.now().plusDays(10),
@@ -87,7 +87,7 @@ class CreatePaymentRequestTest {
         id = UUID.randomUUID()
     )
 
-    private fun createPaymentRequest(
+    private fun createPurchaseRequest(
         country: Country,
         state: State,
         shoppingCart: CreatePurchaseRequest.ShoppingCart?
@@ -106,7 +106,7 @@ class CreatePaymentRequestTest {
         shoppingCart = shoppingCart
     )
 
-    private fun shoppingCart(books: List<Book>): CreatePurchaseRequest.ShoppingCart = CreatePurchaseRequest.ShoppingCart(
+    private fun shoppingCartRequest(books: List<Book>): CreatePurchaseRequest.ShoppingCart = CreatePurchaseRequest.ShoppingCart(
         total = 100.0.toBigDecimal(),
         items = books.map { shoppingCartItem(it.id!!) }
     )

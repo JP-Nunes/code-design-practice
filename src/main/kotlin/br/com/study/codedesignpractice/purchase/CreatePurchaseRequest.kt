@@ -1,9 +1,10 @@
 package br.com.study.codedesignpractice.purchase
 
-import br.com.study.codedesignpractice.location.country.Country
-import br.com.study.codedesignpractice.location.state.State
 import br.com.study.codedesignpractice.book.repository.Book
 import br.com.study.codedesignpractice.book.repository.findBooksByIds
+import br.com.study.codedesignpractice.book.repository.totalPrice
+import br.com.study.codedesignpractice.location.country.Country
+import br.com.study.codedesignpractice.location.state.State
 import br.com.study.codedesignpractice.validator.CpfCnpj
 import br.com.study.codedesignpractice.validator.Exists
 import jakarta.persistence.EntityManager
@@ -75,22 +76,30 @@ data class CreatePurchaseRequest(
          val total: BigDecimal?,
 
          @field:NotEmpty
+         @field:NotNull
          @field:Valid
          val items: List<Item>?,
      ) {
          fun toEntity(entityManager: EntityManager): Purchase.ShoppingCart {
-             val books: List<Book> = this.items?.let { items ->
-                 val booksIds = items.mapNotNull { it.id }
-                 entityManager.findBooksByIds(booksIds)
-             } ?: emptyList()
+             val books: List<Book> = this.items.findBooks(entityManager)
 
              return Purchase.ShoppingCart(
-                 total = this.total,
-                 items = this.items?.map { itemRequest ->
-                     itemRequest.toEntity(books.find { it.id == itemRequest.id })
-                 }
+                 total = books.totalPrice(),
+                 items = this.items.toEntity(books)
              )
          }
+
+         private fun List<Item>?.toEntity(books: List<Book>): List<Purchase.ShoppingCart.Item> = this?.map { itemRequest ->
+             itemRequest.toEntity(books.find { it.id == itemRequest.id })
+         } ?: throw IllegalArgumentException("Shopping cart needs items")
+
+         private fun List<Item>?.findBooks(entityManager: EntityManager): List<Book> = this?.let { items ->
+             val booksIds = items.map {
+                 require(it.id != null) { "Book id should not be null" }
+                 it.id
+             }
+             entityManager.findBooksByIds(booksIds)
+         } ?: throw IllegalArgumentException("Shopping cart needs items")
 
          data class Item(
              @field:NotNull
