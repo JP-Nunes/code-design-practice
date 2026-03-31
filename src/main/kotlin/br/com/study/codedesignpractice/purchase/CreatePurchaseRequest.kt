@@ -7,6 +7,7 @@ import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.state.State
 import br.com.study.codedesignpractice.validator.CpfCnpj
 import br.com.study.codedesignpractice.validator.Exists
+import br.com.study.codedesignpractice.voucher.Voucher
 import jakarta.persistence.EntityManager
 import jakarta.validation.Valid
 import jakarta.validation.constraints.*
@@ -74,6 +75,10 @@ data class CreatePurchaseRequest(
          @field:NotNull
          @field:DecimalMin(value = "0.01", inclusive = true)
          val total: BigDecimal?,
+
+         @field:NotBlank
+         @field:Exists(entityClass = Voucher::class, fieldName = "code")
+         val voucherCode: String?,
 
          @field:NotEmpty
          @field:NotNull

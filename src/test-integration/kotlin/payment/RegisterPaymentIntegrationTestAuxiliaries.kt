@@ -40,6 +40,7 @@ fun createPaymentRequest(
 
 private fun defaultShoppingCart() = CreatePurchaseRequest.ShoppingCart(
     total = BigDecimal(100),
+    voucherCode = "VOUCHER40",
     listOf(CreatePurchaseRequest.ShoppingCart.Item(UUID.randomUUID(), quantity = 2))
 )
 

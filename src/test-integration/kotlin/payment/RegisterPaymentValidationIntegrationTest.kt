@@ -41,8 +41,39 @@ class RegisterPaymentValidationIntegrationTests(
     @param:Autowired private val stateRepository: StateRepository,
     @param:Autowired private val categoryRepository: CategoryRepository,
     @param:Autowired private val authorRepository: AuthorRepository,
-    @param:Autowired private val bookRepository: BookRepository
+    @param:Autowired private val bookRepository: BookRepository,
+    @param:Autowired private val voucherRepository: br.com.study.codedesignpractice.voucher.VoucherRepository
 ) {
+
+    private fun saveVoucher(code: String) {
+        voucherRepository.save(br.com.study.codedesignpractice.voucher.Voucher(
+            code = code,
+            discount = java.math.BigDecimal.TEN,
+            expirationDate = java.time.LocalDate.now().plusDays(30)
+        ))
+    }
+
+    @org.junit.jupiter.api.BeforeEach
+    fun setupVouchers() {
+        listOf(
+            "VOUCHER40",
+            "VOUCHEREMOS",
+            "VOUCHERZINHO",
+            "VOUCHER_TEST",
+            "VOUCHER_DOC",
+            "VOUCHER_DOCFMT",
+            "VOUCHER_ADDR",
+            "VOUCHER_COMP",
+            "VOUCHER_CITY",
+            "VOUCHER_STATE_NULL_NO_STATES",
+            "VOUCHER_STATE_NULL_WITH_STATES",
+            "VOUCHER_STATE_NO_STATES",
+            "VOUCHER_WRONG_STATE",
+            "VOUCHER_NULL_COUNTRY",
+            "VOUCHER_ZIP",
+            "VOUCHER_PHONE"
+        ).forEach { saveVoucher(it) }
+    }
 
     @Nested
     inner class TestRegisterPaymentEmailValidation {
@@ -61,6 +92,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = state.id!!,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
+                    voucherCode = "VOUCHEREMOS",
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
@@ -90,6 +122,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
+                voucherCode = "VOUCHERZINHO",
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val createPaymentRequestWithEmptyEmail =
@@ -133,6 +166,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = state.id!!,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
+                    voucherCode = "VOUCHER_TEST",
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
@@ -163,6 +197,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
+                voucherCode = "VOUCHER_TEST",
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val createPaymentRequestWithBlankFirstName = createPaymentRequest(firstName = " ", countryId = country.id!!, stateId = state.id!!, shoppingCart = shoppingCart)
@@ -203,6 +238,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
+                voucherCode = "VOUCHER_TEST",
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val invalidRequests = listOf(
@@ -243,6 +279,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = state.id!!,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
+                    voucherCode = "VOUCHER_TEST",
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
@@ -272,6 +309,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
+                voucherCode = "VOUCHER_DOC",
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val createPaymentRequestWithEmptyDocument = createPaymentRequest(
@@ -323,6 +361,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = state.id!!,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
+                    voucherCode = "VOUCHER_DOCFMT",
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
@@ -356,6 +395,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
+                voucherCode = "VOUCHER_ADDR",
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val invalidRequests = listOf(
@@ -392,6 +432,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
+                voucherCode = "VOUCHER_COMP",
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val invalidRequests = listOf(
@@ -428,6 +469,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
+                voucherCode = "VOUCHER_CITY",
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val invalidRequests = listOf(
@@ -466,6 +508,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = null,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
+                    voucherCode = "VOUCHER_STATE_NULL_NO_STATES",
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
@@ -520,6 +563,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = null,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
+                    voucherCode = "VOUCHER_STATE_NULL_WITH_STATES",
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
@@ -550,6 +594,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = persistedState.id,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
+                    voucherCode = "VOUCHER_STATE_NO_STATES",
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
@@ -580,6 +625,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = anotherCountryState.id,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
+                    voucherCode = "VOUCHER_WRONG_STATE",
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
@@ -613,6 +659,7 @@ class RegisterPaymentValidationIntegrationTests(
                 stateId = state.id!!,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 1.toBigDecimal(),
+                    voucherCode = "VOUCHER_NULL_COUNTRY",
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
@@ -643,6 +690,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
+                voucherCode = "VOUCHER_ZIP",
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val invalidRequests = listOf(
@@ -679,6 +727,7 @@ class RegisterPaymentValidationIntegrationTests(
 
             val shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
+                voucherCode = "VOUCHER_PHONE",
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
             val invalidRequests = listOf(

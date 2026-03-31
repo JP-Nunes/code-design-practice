@@ -61,6 +61,7 @@ class PaymentControllerTest {
             zipcode = "01310-000",
             shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 100.0.toBigDecimal(),
+                voucherCode = "VOUCHER12",
                 items = books.map { shoppingCartItem(it.id!!) }
             )
         )

@@ -12,6 +12,7 @@ import br.com.study.codedesignpractice.location.state.State
 import br.com.study.codedesignpractice.location.state.StateRepository
 import br.com.study.codedesignpractice.purchase.CreatePurchaseRequest
 import br.com.study.codedesignpractice.purchase.CreatePurchaseResponse
+import br.com.study.codedesignpractice.voucher.Voucher
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,6 +25,7 @@ import org.springframework.test.web.servlet.post
 import org.springframework.transaction.annotation.Transactional
 import toClass
 import writeAsJson
+import java.time.LocalDate
 
 @SpringBootTest(
     classes = [CodeDesignPracticeApplication::class],
@@ -37,7 +39,8 @@ class RegisterPaymentIntegrationTest(
     @param:Autowired private val stateRepository: StateRepository,
     @param:Autowired private val categoryRepository: CategoryRepository,
     @param:Autowired private val authorRepository: AuthorRepository,
-    @param:Autowired private val bookRepository: BookRepository
+    @param:Autowired private val bookRepository: BookRepository,
+    @param:Autowired private val voucherRepository: br.com.study.codedesignpractice.voucher.VoucherRepository
 ) {
 
     @Test
@@ -49,12 +52,20 @@ class RegisterPaymentIntegrationTest(
         val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
         val cpf = "67674204090"
+        voucherRepository.save(
+            Voucher(
+                code = "VOUCHER123",
+                discount = 10.toBigDecimal(),
+                expirationDate = LocalDate.now().plusDays(10)
+            )
+        )
         val validPaymentRequest = createPaymentRequest(
             countryId = country.id!!,
             stateId = state.id!!,
             document = cpf,
             shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
+                voucherCode = "VOUCHER123",
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
         )
@@ -80,12 +91,20 @@ class RegisterPaymentIntegrationTest(
         val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
         val cnpj = "29232727000186"
+        voucherRepository.save(
+            Voucher(
+                code = "VOUCHER10",
+                discount = 10.toBigDecimal(),
+                expirationDate = LocalDate.now().plusDays(10)
+            )
+        )
         val validPaymentRequest = createPaymentRequest(
             countryId = country.id!!,
             stateId = state.id!!,
             document = cnpj,
             shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
+                voucherCode = "VOUCHER10",
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
         )

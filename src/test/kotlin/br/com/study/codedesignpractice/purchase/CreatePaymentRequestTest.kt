@@ -108,6 +108,7 @@ class CreatePaymentRequestTest {
 
     private fun shoppingCartRequest(books: List<Book>): CreatePurchaseRequest.ShoppingCart = CreatePurchaseRequest.ShoppingCart(
         total = 100.0.toBigDecimal(),
+        voucherCode = "VOUCHER15",
         items = books.map { shoppingCartItem(it.id!!) }
     )
 

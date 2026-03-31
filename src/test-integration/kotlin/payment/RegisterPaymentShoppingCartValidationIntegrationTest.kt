@@ -35,8 +35,31 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
     @param:Autowired private val stateRepository: StateRepository,
     @param:Autowired private val categoryRepository: CategoryRepository,
     @param:Autowired private val authorRepository: AuthorRepository,
-    @param:Autowired private val bookRepository: BookRepository
+    @param:Autowired private val bookRepository: BookRepository,
+    @param:Autowired private val voucherRepository: br.com.study.codedesignpractice.voucher.VoucherRepository
 ) {
+
+    private fun saveVoucher(code: String) {
+        voucherRepository.save(br.com.study.codedesignpractice.voucher.Voucher(
+            code = code,
+            discount = java.math.BigDecimal.TEN,
+            expirationDate = java.time.LocalDate.now().plusDays(30)
+        ))
+    }
+
+    @org.junit.jupiter.api.BeforeEach
+    fun setupVouchers() {
+        listOf(
+            "VOUCHER10",
+            "VOUCHER18",
+            "PROMO15",
+            "SUPERPROMO10",
+            "SUPERPROMO50",
+            "VOUCHERINFLUENCERX",
+            "VOUCHER1000",
+            "VOUCHER40"
+        ).forEach { saveVoucher(it) }
+    }
 
     @Test
     fun `should not be able to register a payment with a null shopping cart`() {
@@ -77,6 +100,7 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
                 stateId = state.id!!,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = null,
+                    voucherCode = "VOUCHER10",
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
@@ -106,6 +130,7 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
                 stateId = state.id!!,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.0.toBigDecimal(),
+                    voucherCode = "VOUCHER18",
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
@@ -136,6 +161,7 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
                 stateId = state.id!!,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.10.toBigDecimal(),
+                    voucherCode = "PROMO15",
                     items = emptyList()
                 )
             )
@@ -162,6 +188,7 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
                 stateId = state.id!!,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.10.toBigDecimal(),
+                    voucherCode = "SUPERPROMO10",
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = null, quantity = 1))
                 )
             )
@@ -188,6 +215,7 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
                 stateId = state.id!!,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.10.toBigDecimal(),
+                    voucherCode = "SUPERPROMO50",
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = UUID.randomUUID(), quantity = 1))
                 )
             )
@@ -217,6 +245,7 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
                 stateId = state.id,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.10.toBigDecimal(),
+                    voucherCode = "VOUCHERINFLUENCERX",
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id, quantity = null))
                 )
             )
@@ -246,6 +275,7 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
                 stateId = state.id,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.10.toBigDecimal(),
+                    voucherCode = "VOUCHER1000",
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id, quantity = 0))
                 )
             )
