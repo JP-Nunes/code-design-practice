@@ -7,10 +7,15 @@ import br.com.study.codedesignpractice.category.Category
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.state.State
 import br.com.study.codedesignpractice.validator.StateBelongsToCountryValidator
+import br.com.study.codedesignpractice.voucher.Voucher
+import br.com.study.codedesignpractice.voucher.findVoucherByCode
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.unmockkAll
 import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.ResponseEntity
@@ -28,9 +33,16 @@ class PaymentControllerTest {
     @BeforeEach
     fun setUp() {
         purchaseRepository = mockk<PurchaseRepository>()
+        mockkStatic(EntityManager::findBooksByIds)
+        mockkStatic(EntityManager::findVoucherByCode)
         entityManager = mockk<EntityManager>()
         stateBelongsToCountryValidator = mockk<StateBelongsToCountryValidator>()
         paymentController = PaymentController(purchaseRepository, entityManager, stateBelongsToCountryValidator)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        unmockkAll()
     }
 
     @Test
@@ -47,6 +59,9 @@ class PaymentControllerTest {
         )
         every { entityManager.findBooksByIds(books.map { it.id!! }) } returns books
 
+        val voucher = Voucher(code = "VOUCHER12", discount = 5.toBigDecimal(), expirationDate = LocalDate.now().plusDays(5))
+        every { entityManager.findVoucherByCode("VOUCHER12") } returns voucher
+
         val createPurchaseRequest = CreatePurchaseRequest(
             email = "test@example.com",
             firstName = "John",
@@ -59,9 +74,9 @@ class PaymentControllerTest {
             stateId = state.id,
             phone = "+5511987654321",
             zipcode = "01310-000",
+            voucherCode = "VOUCHER12",
             shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 100.0.toBigDecimal(),
-                voucherCode = "VOUCHER12",
                 items = books.map { shoppingCartItem(it.id!!) }
             )
         )

@@ -6,10 +6,15 @@ import br.com.study.codedesignpractice.book.repository.findBooksByIds
 import br.com.study.codedesignpractice.category.Category
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.state.State
+import br.com.study.codedesignpractice.voucher.Voucher
 import io.mockk.every
 import io.mockk.mockk
 import jakarta.persistence.EntityManager
+import br.com.study.codedesignpractice.voucher.findVoucherByCode
+import io.mockk.mockkStatic
+import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -22,7 +27,14 @@ class CreatePaymentRequestTest {
 
     @BeforeEach
     fun setUp() {
+        mockkStatic(EntityManager::findBooksByIds)
+        mockkStatic(EntityManager::findVoucherByCode)
         entityManager = mockk<EntityManager>()
+    }
+
+    @AfterEach
+    fun tearDown() {
+        unmockkAll()
     }
 
     @Test
@@ -30,10 +42,12 @@ class CreatePaymentRequestTest {
         val country = Country(name = "Argentina", id = UUID.randomUUID())
         val state = State(name = "Mendoza", country = country, id = UUID.randomUUID())
         val books = listOf(book(), book(), book())
+        val voucher = Voucher(code = "VOUCHER15", discount = 10.toBigDecimal(), expirationDate = LocalDate.now().plusDays(10))
 
         every { entityManager.find(Country::class.java, country.id!!) } returns country
         every { entityManager.find(State::class.java, state.id!!) } returns state
         every { entityManager.findBooksByIds(books.map { it.id!! }) } returns books
+        every { entityManager.findVoucherByCode(voucher.code!!) } returns voucher
 
         val createPurchaseRequest = createPurchaseRequest(
             country = country,
@@ -54,6 +68,7 @@ class CreatePaymentRequestTest {
                 state = state,
                 phone = this.phone,
                 zipcode = this.zipcode,
+                voucher = voucher,
                 shoppingCart = Purchase.ShoppingCart(
                     total = books.sumOf { it.price!! },
                     items =  shoppingCart!!.items!!.map { bookRequest ->
@@ -103,12 +118,12 @@ class CreatePaymentRequestTest {
         stateId = state.id!!,
         phone = "+5511988714077",
         zipcode = "18780-000",
+        voucherCode = "VOUCHER15",
         shoppingCart = shoppingCart
     )
 
     private fun shoppingCartRequest(books: List<Book>): CreatePurchaseRequest.ShoppingCart = CreatePurchaseRequest.ShoppingCart(
         total = 100.0.toBigDecimal(),
-        voucherCode = "VOUCHER15",
         items = books.map { shoppingCartItem(it.id!!) }
     )
 

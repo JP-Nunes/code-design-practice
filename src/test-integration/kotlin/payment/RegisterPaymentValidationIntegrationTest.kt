@@ -12,6 +12,7 @@ import br.com.study.codedesignpractice.location.state.State
 import br.com.study.codedesignpractice.location.state.StateRepository
 import br.com.study.codedesignpractice.purchase.CreatePurchaseRequest
 import br.com.study.codedesignpractice.purchase.CreatePurchaseResponse
+import br.com.study.codedesignpractice.voucher.VoucherRepository
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jsonMapper
 import com.fasterxml.jackson.module.kotlin.kotlinModule
@@ -42,7 +43,7 @@ class RegisterPaymentValidationIntegrationTests(
     @param:Autowired private val categoryRepository: CategoryRepository,
     @param:Autowired private val authorRepository: AuthorRepository,
     @param:Autowired private val bookRepository: BookRepository,
-    @param:Autowired private val voucherRepository: br.com.study.codedesignpractice.voucher.VoucherRepository
+    @param:Autowired private val voucherRepository: VoucherRepository
 ) {
 
 

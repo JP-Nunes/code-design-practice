@@ -4,10 +4,12 @@ import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.country.CountryResponse
 import br.com.study.codedesignpractice.location.state.CreateStateResponse
 import br.com.study.codedesignpractice.location.state.State
+import br.com.study.codedesignpractice.voucher.Voucher
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.time.LocalDate
 import java.util.UUID
 
 class CreatePaymentResponseTest {
@@ -55,6 +57,7 @@ class CreatePaymentResponseTest {
 
     private fun payment(): Purchase {
         val country = Country(name = "Brazil", id = UUID.randomUUID())
+        val voucher = Voucher(code = "VOUCHER15", discount = 10.toBigDecimal(), expirationDate = LocalDate.now().plusDays(10))
         return Purchase(
             email = "user.buyer@goodman.com",
             firstName = "Good",
@@ -67,6 +70,7 @@ class CreatePaymentResponseTest {
             state = State(name = "Rio de Janeiro", country = country, id = UUID.randomUUID()),
             phone = "+5521988714077",
             zipcode = "01310-000",
+            voucher = voucher,
             shoppingCart = Purchase.ShoppingCart(total = 100.0.toBigDecimal(), items = listOf()),
             id = UUID.randomUUID()
         )

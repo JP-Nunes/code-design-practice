@@ -4,6 +4,7 @@ import br.com.study.codedesignpractice.book.repository.Book
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.state.State
 import br.com.study.codedesignpractice.validator.CpfCnpj
+import br.com.study.codedesignpractice.voucher.Voucher
 import jakarta.persistence.ElementCollection
 import jakarta.persistence.Embeddable
 import jakarta.persistence.Entity
@@ -52,6 +53,10 @@ data class Purchase(
 
     @field:NotBlank
     val zipcode: String?,
+
+    @field:NotNull
+    @field:ManyToOne
+    val voucher: Voucher?,
 
     @field:NotNull
     @field:Valid

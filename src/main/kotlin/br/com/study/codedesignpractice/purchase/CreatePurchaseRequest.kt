@@ -8,6 +8,7 @@ import br.com.study.codedesignpractice.location.state.State
 import br.com.study.codedesignpractice.validator.CpfCnpj
 import br.com.study.codedesignpractice.validator.Exists
 import br.com.study.codedesignpractice.voucher.Voucher
+import br.com.study.codedesignpractice.voucher.findVoucherByCode
 import jakarta.persistence.EntityManager
 import jakarta.validation.Valid
 import jakarta.validation.constraints.*
@@ -51,34 +52,47 @@ data class CreatePurchaseRequest(
     @field:NotBlank
     val phone: String?,
 
+    @field:NotBlank
+    @field:Exists(entityClass = Voucher::class, fieldName = "code")
+    val voucherCode: String?,
+
     @field:NotNull
     @field:Valid
     val shoppingCart: ShoppingCart?,
 ) {
 
-    fun toEntity(entityManager: EntityManager) = Purchase(
-        email = this.email,
-        firstName = this.firstName,
-        lastName = this.lastName,
-        document = this.document,
-        address = this.address,
-        complement = this.complement,
-        city = this.city,
-        country = entityManager.find(Country::class.java, this.countryId),
-        state = this.stateId?.let { entityManager.find(State::class.java, this.stateId) },
-        phone = this.phone,
-        zipcode = this.zipcode,
-        shoppingCart = this.shoppingCart?.toEntity(entityManager) ?: throw IllegalArgumentException("A payment needs a shopping cart")
-    )
+    fun toEntity(entityManager: EntityManager): Purchase {
+        val shoppingCart = requireNotNull(this.shoppingCart) { "A payment needs a shopping cart" }
+        val voucherCode = this.voucherCode ?: shoppingCart.voucherCode
+            ?: throw IllegalArgumentException("A voucher code is required")
+        val voucher = entityManager.findVoucherByCode(voucherCode)
+            ?: throw IllegalArgumentException("Voucher not found for code $voucherCode")
+
+        return Purchase(
+            email = this.email,
+            firstName = this.firstName,
+            lastName = this.lastName,
+            document = this.document,
+            address = this.address,
+            complement = this.complement,
+            city = this.city,
+            country = entityManager.find(Country::class.java, this.countryId),
+            state = this.stateId?.let { entityManager.find(State::class.java, this.stateId) },
+            phone = this.phone,
+            zipcode = this.zipcode,
+            voucher = voucher,
+            shoppingCart = shoppingCart.toEntity(entityManager)
+        )
+    }
 
      data class ShoppingCart(
          @field:NotNull
          @field:DecimalMin(value = "0.01", inclusive = true)
          val total: BigDecimal?,
 
-         @field:NotBlank
-         @field:Exists(entityClass = Voucher::class, fieldName = "code")
-         val voucherCode: String?,
+         // Optional here for backward compatibility with older requests/tests.
+         // Validation for existence happens at the top-level voucherCode when present.
+         val voucherCode: String? = null,
 
          @field:NotEmpty
          @field:NotNull

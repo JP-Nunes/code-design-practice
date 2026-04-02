@@ -23,6 +23,7 @@ fun createPaymentRequest(
     stateId: UUID?,
     zipcode: String? = "01310-000",
     phone: String? = "+5511999999999",
+    voucherCode: String? = "VOUCHER40",
     shoppingCart: CreatePurchaseRequest.ShoppingCart? = defaultShoppingCart()
 ) = CreatePurchaseRequest(
     email = email,
@@ -36,13 +37,13 @@ fun createPaymentRequest(
     stateId = stateId,
     zipcode = zipcode,
     phone = phone,
+    voucherCode = voucherCode,
     shoppingCart = shoppingCart
 )
 
 private fun defaultShoppingCart() = CreatePurchaseRequest.ShoppingCart(
     total = BigDecimal(100),
-    voucherCode = "VOUCHER40",
-    listOf(CreatePurchaseRequest.ShoppingCart.Item(UUID.randomUUID(), quantity = 2))
+    items = listOf(CreatePurchaseRequest.ShoppingCart.Item(UUID.randomUUID(), quantity = 2))
 )
 
 fun book(persistedCategory: Category, persistedAuthor: Author) = Book(

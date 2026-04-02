@@ -5,6 +5,7 @@ import br.com.study.codedesignpractice.book.repository.Book
 import br.com.study.codedesignpractice.category.Category
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.state.State
+import br.com.study.codedesignpractice.voucher.Voucher
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,6 +37,9 @@ class PaymentRepositoryTest @Autowired constructor(
         val persistedCategory = entityManager.persist(category)
         val persistedAuthor = entityManager.persist(author)
 
+        val voucher = Voucher(code = "VOUCHER15", discount = 10.toBigDecimal(), expirationDate = LocalDate.now().plusDays(10))
+        val persistedVoucher = entityManager.persist(voucher)
+
         val book = Book(
             title = "Book Title",
             summary = "Book summary",
@@ -62,6 +66,7 @@ class PaymentRepositoryTest @Autowired constructor(
             state = state,
             phone = "+5511988714077",
             zipcode = "01310-000",
+            voucher = persistedVoucher,
             shoppingCart = Purchase.ShoppingCart(
                 total = 100.0.toBigDecimal(),
                 items = listOf(

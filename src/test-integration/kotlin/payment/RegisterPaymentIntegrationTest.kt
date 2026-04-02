@@ -12,6 +12,7 @@ import br.com.study.codedesignpractice.location.state.State
 import br.com.study.codedesignpractice.location.state.StateRepository
 import br.com.study.codedesignpractice.purchase.CreatePurchaseRequest
 import br.com.study.codedesignpractice.purchase.CreatePurchaseResponse
+import br.com.study.codedesignpractice.voucher.VoucherRepository
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,7 +39,7 @@ class RegisterPaymentIntegrationTest(
     @param:Autowired private val categoryRepository: CategoryRepository,
     @param:Autowired private val authorRepository: AuthorRepository,
     @param:Autowired private val bookRepository: BookRepository,
-    @param:Autowired private val voucherRepository: br.com.study.codedesignpractice.voucher.VoucherRepository
+    @param:Autowired private val voucherRepository: VoucherRepository
 ) {
 
     @Test
@@ -54,9 +55,9 @@ class RegisterPaymentIntegrationTest(
             countryId = country.id!!,
             stateId = state.id!!,
             document = cpf,
+            voucherCode = persistedVoucher.code,
             shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                voucherCode = persistedVoucher.code,
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
         )
@@ -87,9 +88,9 @@ class RegisterPaymentIntegrationTest(
             countryId = country.id!!,
             stateId = state.id!!,
             document = cnpj,
+            voucherCode = persistedVoucher.code,
             shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                voucherCode = persistedVoucher.code,
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
         )

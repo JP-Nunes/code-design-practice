@@ -11,6 +11,7 @@ import br.com.study.codedesignpractice.location.country.CountryRepository
 import br.com.study.codedesignpractice.location.state.State
 import br.com.study.codedesignpractice.location.state.StateRepository
 import br.com.study.codedesignpractice.purchase.CreatePurchaseRequest
+import br.com.study.codedesignpractice.voucher.VoucherRepository
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,7 +37,7 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
     @param:Autowired private val categoryRepository: CategoryRepository,
     @param:Autowired private val authorRepository: AuthorRepository,
     @param:Autowired private val bookRepository: BookRepository,
-    @param:Autowired private val voucherRepository: br.com.study.codedesignpractice.voucher.VoucherRepository
+    @param:Autowired private val voucherRepository: VoucherRepository
 ) {
 
 
@@ -79,9 +80,9 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
             val request = createPaymentRequest(
                 countryId = country.id!!,
                 stateId = state.id!!,
+                voucherCode = persistedVoucher.code,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = null,
-                    voucherCode = persistedVoucher.code,
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
@@ -111,9 +112,9 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
             val request = createPaymentRequest(
                 countryId = country.id!!,
                 stateId = state.id!!,
+                voucherCode = persistedVoucher.code,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.0.toBigDecimal(),
-                    voucherCode = persistedVoucher.code,
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
@@ -143,9 +144,9 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
             val request = createPaymentRequest(
                 countryId = country.id!!,
                 stateId = state.id!!,
+                voucherCode = persistedVoucher.code,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.10.toBigDecimal(),
-                    voucherCode = persistedVoucher.code,
                     items = emptyList()
                 )
             )
@@ -172,9 +173,9 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
             val request = createPaymentRequest(
                 countryId = country.id!!,
                 stateId = state.id!!,
+                voucherCode = persistedVoucher.code,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.10.toBigDecimal(),
-                    voucherCode = persistedVoucher.code,
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = null, quantity = 1))
                 )
             )
@@ -201,6 +202,7 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
             val request = createPaymentRequest(
                 countryId = country.id!!,
                 stateId = state.id!!,
+                voucherCode = persistedVoucher.code,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.10.toBigDecimal(),
                     voucherCode = persistedVoucher.code,
