@@ -39,27 +39,7 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
     @param:Autowired private val voucherRepository: br.com.study.codedesignpractice.voucher.VoucherRepository
 ) {
 
-    private fun saveVoucher(code: String) {
-        voucherRepository.save(br.com.study.codedesignpractice.voucher.Voucher(
-            code = code,
-            discount = java.math.BigDecimal.TEN,
-            expirationDate = java.time.LocalDate.now().plusDays(30)
-        ))
-    }
 
-    @org.junit.jupiter.api.BeforeEach
-    fun setupVouchers() {
-        listOf(
-            "VOUCHER10",
-            "VOUCHER18",
-            "PROMO15",
-            "SUPERPROMO10",
-            "SUPERPROMO50",
-            "VOUCHERINFLUENCERX",
-            "VOUCHER1000",
-            "VOUCHER40"
-        ).forEach { saveVoucher(it) }
-    }
 
     @Test
     fun `should not be able to register a payment with a null shopping cart`() {
@@ -94,13 +74,14 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
             val persistedCategory = categoryRepository.save(Category(name = "Non Fiction"))
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
+            val persistedVoucher = voucherRepository.save(voucher(code = "VOUCHER10"))
 
             val request = createPaymentRequest(
                 countryId = country.id!!,
                 stateId = state.id!!,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = null,
-                    voucherCode = "VOUCHER10",
+                    voucherCode = persistedVoucher.code,
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
@@ -125,12 +106,14 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
+            val persistedVoucher = voucherRepository.save(voucher(code = "VOUCHER18"))
+
             val request = createPaymentRequest(
                 countryId = country.id!!,
                 stateId = state.id!!,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.0.toBigDecimal(),
-                    voucherCode = "VOUCHER18",
+                    voucherCode = persistedVoucher.code,
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
                 )
             )
@@ -155,13 +138,14 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
         fun `should not be able to register a payment with a shopping cart with an empty list of items`() {
             val country = countryRepository.save(Country(name = "India"))
             val state = stateRepository.save(State(name = "Delhi", country = country))
+            val persistedVoucher = voucherRepository.save(voucher(code = "PROMO15"))
 
             val request = createPaymentRequest(
                 countryId = country.id!!,
                 stateId = state.id!!,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.10.toBigDecimal(),
-                    voucherCode = "PROMO15",
+                    voucherCode = persistedVoucher.code,
                     items = emptyList()
                 )
             )
@@ -183,12 +167,14 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
             val country = countryRepository.save(Country(name = "India"))
             val state = stateRepository.save(State(name = "Delhi", country = country))
 
+            val persistedVoucher = voucherRepository.save(voucher(code = "SUPERPROMO10"))
+
             val request = createPaymentRequest(
                 countryId = country.id!!,
                 stateId = state.id!!,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.10.toBigDecimal(),
-                    voucherCode = "SUPERPROMO10",
+                    voucherCode = persistedVoucher.code,
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = null, quantity = 1))
                 )
             )
@@ -210,12 +196,14 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
             val country = countryRepository.save(Country(name = "India"))
             val state = stateRepository.save(State(name = "Delhi", country = country))
 
+            val persistedVoucher = voucherRepository.save(voucher(code = "SUPERPROMO50"))
+
             val request = createPaymentRequest(
                 countryId = country.id!!,
                 stateId = state.id!!,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.10.toBigDecimal(),
-                    voucherCode = "SUPERPROMO50",
+                    voucherCode = persistedVoucher.code,
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = UUID.randomUUID(), quantity = 1))
                 )
             )
@@ -240,12 +228,14 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
+            val persistedVoucher = voucherRepository.save(voucher(code = "VOUCHERINFLUENCERX"))
+
             val request = createPaymentRequest(
                 countryId = country.id,
                 stateId = state.id,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.10.toBigDecimal(),
-                    voucherCode = "VOUCHERINFLUENCERX",
+                    voucherCode = persistedVoucher.code,
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id, quantity = null))
                 )
             )
@@ -270,12 +260,14 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
             val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
             val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
+            val persistedVoucher = voucherRepository.save(voucher(code = "VOUCHER1000"))
+
             val request = createPaymentRequest(
                 countryId = country.id,
                 stateId = state.id,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.10.toBigDecimal(),
-                    voucherCode = "VOUCHER1000",
+                    voucherCode = persistedVoucher.code,
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id, quantity = 0))
                 )
             )

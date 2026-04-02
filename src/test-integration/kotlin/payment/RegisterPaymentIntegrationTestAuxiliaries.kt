@@ -4,6 +4,7 @@ import br.com.study.codedesignpractice.author.Author
 import br.com.study.codedesignpractice.book.repository.Book
 import br.com.study.codedesignpractice.category.Category
 import br.com.study.codedesignpractice.purchase.CreatePurchaseRequest
+import br.com.study.codedesignpractice.voucher.Voucher
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
@@ -55,3 +56,9 @@ fun book(persistedCategory: Category, persistedAuthor: Author) = Book(
     category = persistedCategory,
     author = persistedAuthor
 )
+
+fun voucher(
+    code: String = "VOUCHER40",
+    discount: BigDecimal = BigDecimal.TEN,
+    expirationDate: LocalDate = LocalDate.now().plusDays(30)
+) = Voucher(code, discount, expirationDate)

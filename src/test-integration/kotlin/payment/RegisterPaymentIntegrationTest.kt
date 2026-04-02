@@ -12,7 +12,6 @@ import br.com.study.codedesignpractice.location.state.State
 import br.com.study.codedesignpractice.location.state.StateRepository
 import br.com.study.codedesignpractice.purchase.CreatePurchaseRequest
 import br.com.study.codedesignpractice.purchase.CreatePurchaseResponse
-import br.com.study.codedesignpractice.voucher.Voucher
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,7 +24,6 @@ import org.springframework.test.web.servlet.post
 import org.springframework.transaction.annotation.Transactional
 import toClass
 import writeAsJson
-import java.time.LocalDate
 
 @SpringBootTest(
     classes = [CodeDesignPracticeApplication::class],
@@ -50,22 +48,15 @@ class RegisterPaymentIntegrationTest(
         val persistedCategory = categoryRepository.save(Category(name = "Non Fiction"))
         val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
         val book = bookRepository.save(book(persistedCategory, persistedAuthor))
-
+        val persistedVoucher = voucherRepository.save(voucher(code = "VOUCHER123"))
         val cpf = "67674204090"
-        voucherRepository.save(
-            Voucher(
-                code = "VOUCHER123",
-                discount = 10.toBigDecimal(),
-                expirationDate = LocalDate.now().plusDays(10)
-            )
-        )
         val validPaymentRequest = createPaymentRequest(
             countryId = country.id!!,
             stateId = state.id!!,
             document = cpf,
             shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                voucherCode = "VOUCHER123",
+                voucherCode = persistedVoucher.code,
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
         )
@@ -90,21 +81,15 @@ class RegisterPaymentIntegrationTest(
         val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
         val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
+        val persistedVoucher = voucherRepository.save(voucher(code = "VOUCHER10"))
         val cnpj = "29232727000186"
-        voucherRepository.save(
-            Voucher(
-                code = "VOUCHER10",
-                discount = 10.toBigDecimal(),
-                expirationDate = LocalDate.now().plusDays(10)
-            )
-        )
         val validPaymentRequest = createPaymentRequest(
             countryId = country.id!!,
             stateId = state.id!!,
             document = cnpj,
             shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
-                voucherCode = "VOUCHER10",
+                voucherCode = persistedVoucher.code,
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
             )
         )
