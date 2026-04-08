@@ -63,10 +63,8 @@ data class CreatePurchaseRequest(
 
     fun toEntity(entityManager: EntityManager): Purchase {
         val shoppingCart = requireNotNull(this.shoppingCart) { "A payment needs a shopping cart" }
-        val voucherCode = this.voucherCode ?: shoppingCart.voucherCode
-            ?: throw IllegalArgumentException("A voucher code is required")
-        val voucher = entityManager.findVoucherByCode(voucherCode)
-            ?: throw IllegalArgumentException("Voucher not found for code $voucherCode")
+        val voucherCode = requireNotNull(this.voucherCode) { "A voucher code is required" }
+        val voucher = entityManager.findVoucherByCode(voucherCode) ?: throw IllegalArgumentException("Voucher not found for code $voucherCode")
 
         return Purchase(
             email = this.email,
@@ -89,10 +87,6 @@ data class CreatePurchaseRequest(
          @field:NotNull
          @field:DecimalMin(value = "0.01", inclusive = true)
          val total: BigDecimal?,
-
-         // Optional here for backward compatibility with older requests/tests.
-         // Validation for existence happens at the top-level voucherCode when present.
-         val voucherCode: String? = null,
 
          @field:NotEmpty
          @field:NotNull

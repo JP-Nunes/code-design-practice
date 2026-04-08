@@ -88,7 +88,8 @@ class CreatePaymentResponseTest {
             city = this.city!!,
             state = CreateStateResponse.fromEntity(this.state!!),
             zipcode = this.zipcode!!,
-            complement = this.complement!!
+            complement = this.complement!!,
+            totalWithDiscount = this.totalWithDiscount!!
         )
     }
 }

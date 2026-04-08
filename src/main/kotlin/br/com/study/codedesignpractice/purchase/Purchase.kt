@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.validation.Valid
 import jakarta.validation.constraints.*
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.*
 
 @Entity
@@ -66,6 +67,14 @@ data class Purchase(
     @field:GeneratedValue
     val id: UUID? = null,
 ) {
+
+    val totalWithDiscount: BigDecimal?
+        get() {
+            val total = shoppingCart?.total ?: throw IllegalStateException("Shopping cart total cannot be null")
+            val multiplier = voucher?.discountMultiplier ?: return total
+            val discounted = total.multiply(multiplier)
+            return discounted.coerceAtLeast(BigDecimal.ZERO).setScale(2, RoundingMode.HALF_UP)
+        }
 
     @Embeddable
     data class ShoppingCart(
