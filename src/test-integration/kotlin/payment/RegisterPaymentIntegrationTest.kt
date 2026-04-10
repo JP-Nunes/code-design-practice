@@ -132,7 +132,8 @@ class RegisterPaymentIntegrationTest(
                   "name": "Brazil"
                 }
               },
-              "zipcode": "01310-000"
+              "zipcode": "01310-000",
+              "totalWithDiscount": ${paymentResponse.totalWithDiscount}
             }
         """.trimIndent()
 

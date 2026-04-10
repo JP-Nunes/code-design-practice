@@ -46,10 +46,12 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
     fun `should not be able to register a payment with a null shopping cart`() {
         val country = countryRepository.save(Country(name = "Brazil"))
         val state = stateRepository.save(State(name = "Goiás", country = country))
+        val persistedVoucher = voucherRepository.save(voucher(code = "VOUCHER_NULL_CART"))
 
         val request = createPaymentRequest(
             countryId = country.id!!,
             stateId = state.id!!,
+            voucherCode = persistedVoucher.code,
             shoppingCart = null
         )
 
@@ -205,7 +207,6 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
                 voucherCode = persistedVoucher.code,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.10.toBigDecimal(),
-                    voucherCode = persistedVoucher.code,
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = UUID.randomUUID(), quantity = 1))
                 )
             )
@@ -235,9 +236,9 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
             val request = createPaymentRequest(
                 countryId = country.id,
                 stateId = state.id,
+                voucherCode = persistedVoucher.code,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.10.toBigDecimal(),
-                    voucherCode = persistedVoucher.code,
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id, quantity = null))
                 )
             )
@@ -267,9 +268,9 @@ class RegisterPaymentShoppingCartValidationIntegrationTests(
             val request = createPaymentRequest(
                 countryId = country.id,
                 stateId = state.id,
+                voucherCode = persistedVoucher.code,
                 shoppingCart = CreatePurchaseRequest.ShoppingCart(
                     total = 0.10.toBigDecimal(),
-                    voucherCode = persistedVoucher.code,
                     items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id, quantity = 0))
                 )
             )
