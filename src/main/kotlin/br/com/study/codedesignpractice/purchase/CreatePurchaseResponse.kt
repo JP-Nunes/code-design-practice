@@ -19,6 +19,7 @@ data class CreatePurchaseResponse(
     val country: CountryResponse,
     val state: CreateStateResponse?,
     val zipcode: String,
+    val total: BigDecimal,
     val totalWithDiscount: BigDecimal,
 ) {
 
@@ -38,6 +39,7 @@ data class CreatePurchaseResponse(
                     country = CountryResponse.fromEntity(requireNotNull(this.country) { "Country id cannot be null" }),
                     state = this.state?.let { CreateStateResponse.fromEntity(it) },
                     zipcode = requireNotNull(this.zipcode) { "Zipcode id cannot be null" },
+                    total = requireNotNull(this.shoppingCart?.total) { "Total cannot be null" },
                     totalWithDiscount = requireNotNull(this.totalWithDiscount) { "Total with discount cannot be null" }
                 )
             }

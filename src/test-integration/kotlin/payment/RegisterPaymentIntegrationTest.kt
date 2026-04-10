@@ -133,6 +133,7 @@ class RegisterPaymentIntegrationTest(
                 }
               },
               "zipcode": "01310-000",
+              "total": 20.00,
               "totalWithDiscount": 18.00
             }
         """.trimIndent()
