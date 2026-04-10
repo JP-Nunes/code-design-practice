@@ -7,7 +7,6 @@ import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
 import jakarta.validation.Payload
 import org.springframework.util.Assert
-import java.util.UUID
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
 
@@ -22,7 +21,7 @@ annotation class Exists(
     val fieldName: String
 )
 
-class ExistsValidator() : ConstraintValidator<Exists, UUID> {
+class ExistsValidator() : ConstraintValidator<Exists, Any> {
 
     private lateinit var kClass: KClass<*>
     private lateinit var fieldName: String
@@ -33,7 +32,7 @@ class ExistsValidator() : ConstraintValidator<Exists, UUID> {
         this.fieldName = constraintAnnotation.fieldName
     }
 
-    override fun isValid(value: UUID?, context: ConstraintValidatorContext?): Boolean {
+    override fun isValid(value: Any?, context: ConstraintValidatorContext?): Boolean {
         if (value == null) return true
 
         val query = entityManager.createQuery("select 1 from ${kClass.jvmName} where $fieldName=:value")

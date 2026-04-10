@@ -1,6 +1,7 @@
 package br.com.study.codedesignpractice.book.controller.response
 
 import br.com.study.codedesignpractice.book.repository.Book
+import java.math.BigDecimal
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -9,7 +10,7 @@ data class BookResponse(
     val title: String?,
     val summary: String?,
     val tableOfContents: String?,
-    val price: Int?,
+    val price: BigDecimal?,
     val numberOfPages: Int?,
     val isbn: String?,
     val publishDate: String?,

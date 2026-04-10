@@ -69,7 +69,7 @@ class FindBookByIdIntegrationTest(
         title = "Book One",
         summary = "First book summary",
         tableOfContents = "TOC 1",
-        price = 300,
+        price = 300.toBigDecimal(),
         numberOfPages = 200,
         isbn = "111-111-111",
         publishDate = LocalDate.now().plusDays(15),

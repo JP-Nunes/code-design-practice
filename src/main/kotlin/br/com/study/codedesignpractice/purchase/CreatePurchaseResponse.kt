@@ -3,6 +3,7 @@ package br.com.study.codedesignpractice.purchase
 import br.com.study.codedesignpractice.location.country.CountryResponse
 import br.com.study.codedesignpractice.location.state.CreateStateResponse
 import com.fasterxml.jackson.annotation.JsonInclude
+import java.math.BigDecimal
 import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -18,6 +19,8 @@ data class CreatePurchaseResponse(
     val country: CountryResponse,
     val state: CreateStateResponse?,
     val zipcode: String,
+    val total: BigDecimal,
+    val totalWithDiscount: BigDecimal,
 ) {
 
     companion object {
@@ -35,7 +38,9 @@ data class CreatePurchaseResponse(
                     complement = requireNotNull(this.complement) { "Complement id cannot be null" },
                     country = CountryResponse.fromEntity(requireNotNull(this.country) { "Country id cannot be null" }),
                     state = this.state?.let { CreateStateResponse.fromEntity(it) },
-                    zipcode = requireNotNull(this.zipcode) { "Zipcode id cannot be null" }
+                    zipcode = requireNotNull(this.zipcode) { "Zipcode id cannot be null" },
+                    total = requireNotNull(this.shoppingCart?.total) { "Total cannot be null" },
+                    totalWithDiscount = requireNotNull(this.totalWithDiscount) { "Total with discount cannot be null" }
                 )
             }
         }

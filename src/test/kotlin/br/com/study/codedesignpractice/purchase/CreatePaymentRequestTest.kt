@@ -6,14 +6,20 @@ import br.com.study.codedesignpractice.book.repository.findBooksByIds
 import br.com.study.codedesignpractice.category.Category
 import br.com.study.codedesignpractice.location.country.Country
 import br.com.study.codedesignpractice.location.state.State
+import br.com.study.codedesignpractice.voucher.Voucher
 import io.mockk.every
 import io.mockk.mockk
 import jakarta.persistence.EntityManager
+import br.com.study.codedesignpractice.voucher.findVoucherByCode
+import io.mockk.mockkStatic
+import io.mockk.unmockkAll
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.util.*
+import kotlin.collections.sumOf
 
 class CreatePaymentRequestTest {
 
@@ -21,7 +27,14 @@ class CreatePaymentRequestTest {
 
     @BeforeEach
     fun setUp() {
+        mockkStatic(EntityManager::findBooksByIds)
+        mockkStatic(EntityManager::findVoucherByCode)
         entityManager = mockk<EntityManager>()
+    }
+
+    @AfterEach
+    fun tearDown() {
+        unmockkAll()
     }
 
     @Test
@@ -29,19 +42,20 @@ class CreatePaymentRequestTest {
         val country = Country(name = "Argentina", id = UUID.randomUUID())
         val state = State(name = "Mendoza", country = country, id = UUID.randomUUID())
         val books = listOf(book(), book(), book())
+        val voucher = Voucher(code = "VOUCHER15", discount = 10.toBigDecimal(), expirationDate = LocalDate.now().plusDays(10))
 
         every { entityManager.find(Country::class.java, country.id!!) } returns country
         every { entityManager.find(State::class.java, state.id!!) } returns state
         every { entityManager.findBooksByIds(books.map { it.id!! }) } returns books
+        every { entityManager.findVoucherByCode(voucher.code!!) } returns voucher
 
-        val shoppingCart = shoppingCart(books)
-        val createPaymentRequest = createPaymentRequest(
+        val createPurchaseRequest = createPurchaseRequest(
             country = country,
             state = state,
-            shoppingCart = shoppingCart
+            shoppingCart = shoppingCartRequest(books)
         )
 
-        val expected = with(createPaymentRequest) {
+        val expected = with(createPurchaseRequest) {
             Purchase(
                 email = this.email,
                 firstName = this.firstName,
@@ -54,9 +68,10 @@ class CreatePaymentRequestTest {
                 state = state,
                 phone = this.phone,
                 zipcode = this.zipcode,
+                voucher = voucher,
                 shoppingCart = Purchase.ShoppingCart(
-                    total = shoppingCart.total,
-                    items =  shoppingCart.items?.map { bookRequest ->
+                    total = books.sumOf { it.price!! },
+                    items =  shoppingCart!!.items!!.map { bookRequest ->
                         Purchase.ShoppingCart.Item(
                             book = books.find { it.id == bookRequest.id },
                             bookRequest.quantity
@@ -65,7 +80,7 @@ class CreatePaymentRequestTest {
                 )
             )
         }
-        val actual = createPaymentRequest.toEntity(entityManager)
+        val actual = createPurchaseRequest.toEntity(entityManager)
 
         assertThat(expected).isEqualTo(actual)
     }
@@ -74,7 +89,7 @@ class CreatePaymentRequestTest {
         title = "Book Title",
         summary = "Book summary",
         tableOfContents = "Markdown table of contents",
-        price = 250,
+        price = 250.toBigDecimal(),
         numberOfPages = 150,
         isbn = "123-456-789",
         publishDate = LocalDate.now().plusDays(10),
@@ -87,7 +102,7 @@ class CreatePaymentRequestTest {
         id = UUID.randomUUID()
     )
 
-    private fun createPaymentRequest(
+    private fun createPurchaseRequest(
         country: Country,
         state: State,
         shoppingCart: CreatePurchaseRequest.ShoppingCart?
@@ -103,10 +118,11 @@ class CreatePaymentRequestTest {
         stateId = state.id!!,
         phone = "+5511988714077",
         zipcode = "18780-000",
+        voucherCode = "VOUCHER15",
         shoppingCart = shoppingCart
     )
 
-    private fun shoppingCart(books: List<Book>): CreatePurchaseRequest.ShoppingCart = CreatePurchaseRequest.ShoppingCart(
+    private fun shoppingCartRequest(books: List<Book>): CreatePurchaseRequest.ShoppingCart = CreatePurchaseRequest.ShoppingCart(
         total = 100.0.toBigDecimal(),
         items = books.map { shoppingCartItem(it.id!!) }
     )

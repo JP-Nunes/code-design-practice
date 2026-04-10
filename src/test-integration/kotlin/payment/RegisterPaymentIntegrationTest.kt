@@ -12,6 +12,7 @@ import br.com.study.codedesignpractice.location.state.State
 import br.com.study.codedesignpractice.location.state.StateRepository
 import br.com.study.codedesignpractice.purchase.CreatePurchaseRequest
 import br.com.study.codedesignpractice.purchase.CreatePurchaseResponse
+import br.com.study.codedesignpractice.voucher.VoucherRepository
 import org.junit.jupiter.api.Test
 import org.skyscreamer.jsonassert.JSONAssert
 import org.springframework.beans.factory.annotation.Autowired
@@ -37,7 +38,8 @@ class RegisterPaymentIntegrationTest(
     @param:Autowired private val stateRepository: StateRepository,
     @param:Autowired private val categoryRepository: CategoryRepository,
     @param:Autowired private val authorRepository: AuthorRepository,
-    @param:Autowired private val bookRepository: BookRepository
+    @param:Autowired private val bookRepository: BookRepository,
+    @param:Autowired private val voucherRepository: VoucherRepository
 ) {
 
     @Test
@@ -47,12 +49,13 @@ class RegisterPaymentIntegrationTest(
         val persistedCategory = categoryRepository.save(Category(name = "Non Fiction"))
         val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
         val book = bookRepository.save(book(persistedCategory, persistedAuthor))
-
+        val persistedVoucher = voucherRepository.save(voucher(code = "VOUCHER123"))
         val cpf = "67674204090"
         val validPaymentRequest = createPaymentRequest(
             countryId = country.id!!,
             stateId = state.id!!,
             document = cpf,
+            voucherCode = persistedVoucher.code,
             shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
@@ -79,11 +82,13 @@ class RegisterPaymentIntegrationTest(
         val persistedAuthor = authorRepository.save(Author("Mark Richards", "mark.richards@email.com", "A sample author"))
         val book = bookRepository.save(book(persistedCategory, persistedAuthor))
 
+        val persistedVoucher = voucherRepository.save(voucher(code = "VOUCHER10"))
         val cnpj = "29232727000186"
         val validPaymentRequest = createPaymentRequest(
             countryId = country.id!!,
             stateId = state.id!!,
             document = cnpj,
+            voucherCode = persistedVoucher.code,
             shoppingCart = CreatePurchaseRequest.ShoppingCart(
                 total = 1.toBigDecimal(),
                 items = listOf(CreatePurchaseRequest.ShoppingCart.Item(id = book.id!!, quantity = 1))
@@ -105,7 +110,7 @@ class RegisterPaymentIntegrationTest(
     fun expectedResponse(mockMvcResult: MvcResult): String {
         val paymentResponse = mockMvcResult.response.contentAsString.toClass<CreatePurchaseResponse>()
 
-        val expected = """
+        return """
             {
               "id": "${paymentResponse.id}",
               "buyerName": "John",
@@ -127,10 +132,10 @@ class RegisterPaymentIntegrationTest(
                   "name": "Brazil"
                 }
               },
-              "zipcode": "01310-000"
+              "zipcode": "01310-000",
+              "total": 20.00,
+              "totalWithDiscount": 18.00
             }
         """.trimIndent()
-
-        return expected
     }
 }
