@@ -110,7 +110,7 @@ class RegisterPaymentIntegrationTest(
     fun expectedResponse(mockMvcResult: MvcResult): String {
         val paymentResponse = mockMvcResult.response.contentAsString.toClass<CreatePurchaseResponse>()
 
-        val expected = """
+        return """
             {
               "id": "${paymentResponse.id}",
               "buyerName": "John",
@@ -133,10 +133,8 @@ class RegisterPaymentIntegrationTest(
                 }
               },
               "zipcode": "01310-000",
-              "totalWithDiscount": ${paymentResponse.totalWithDiscount}
+              "totalWithDiscount": 18.00
             }
         """.trimIndent()
-
-        return expected
     }
 }

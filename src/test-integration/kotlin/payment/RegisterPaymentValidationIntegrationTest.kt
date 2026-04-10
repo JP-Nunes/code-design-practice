@@ -509,7 +509,7 @@ class RegisterPaymentValidationIntegrationTests(
             val mapper = jsonMapper { addModules(kotlinModule(), JavaTimeModule()) }
             val paymentResponse = mapper.readValue(mockMvcResult.response.contentAsString, CreatePurchaseResponse::class.java)
 
-            val expected = """
+            return """
                 {
                   "id": "${paymentResponse.id}",
                   "buyerName": "John",
@@ -524,11 +524,9 @@ class RegisterPaymentValidationIntegrationTests(
                     "name": "Brazil"
                   },
                   "zipcode": "01310-000",
-                  "totalWithDiscount": ${paymentResponse.totalWithDiscount}
+                  "totalWithDiscount": 18.00
                 }
             """.trimIndent()
-
-            return expected
         }
 
         @Test
