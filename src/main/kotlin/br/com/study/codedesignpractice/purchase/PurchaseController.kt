@@ -3,14 +3,12 @@ package br.com.study.codedesignpractice.purchase
 import br.com.study.codedesignpractice.validator.StateBelongsToCountryValidator
 import jakarta.persistence.EntityManager
 import jakarta.validation.Valid
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.WebDataBinder
-import org.springframework.web.bind.annotation.InitBinder
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.net.URI
+import java.util.*
 
 const val PAYMENTS_V1_PATH = "/v1/payments"
 
@@ -35,5 +33,11 @@ class PaymentController(
         return ResponseEntity
             .created(URI("$PAYMENTS_V1_PATH/${payment.id}"))
             .body(CreatePurchaseResponse.fromEntity(payment))
+    }
+
+    @GetMapping("/{id}")
+    fun findPayment(@PathVariable id: UUID): ResponseEntity<FindPurchaseResponse> {
+        val purchase = purchaseRepository.findByIdOrNull(id) ?: return ResponseEntity.notFound().build()
+        return ResponseEntity.ok(FindPurchaseResponse.fromEntity(purchase))
     }
 }

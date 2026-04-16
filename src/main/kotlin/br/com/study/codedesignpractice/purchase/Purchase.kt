@@ -76,6 +76,8 @@ data class Purchase(
             return discounted.coerceAtLeast(BigDecimal.ZERO).setScale(2, RoundingMode.HALF_UP)
         }
 
+    fun hasVoucher(): Boolean = this.voucher != null
+
     @Embeddable
     data class ShoppingCart(
         @field:NotNull
